@@ -16,8 +16,8 @@ const dashboards = [
     file: "dashboards/marketing.html"
   },
   {
-    title: "Operaciones",
-    category: "Operaciones",
+    title: "Modelo de Financiamiento",
+    category: "Equipo Presupuesto",
     description: "Estado de procesos e indicadores operativos.",
     file: "dashboards/dashboard_modelo_financiamiento.html"
   }
