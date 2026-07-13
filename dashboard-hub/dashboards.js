@@ -19,6 +19,6 @@ const dashboards = [
     title: "Operaciones",
     category: "Operaciones",
     description: "Estado de procesos e indicadores operativos.",
-    file: "dashboards/operaciones.html"
+    file: "dashboards/dashboard_modelo_financiamiento.html"
   }
 ];
