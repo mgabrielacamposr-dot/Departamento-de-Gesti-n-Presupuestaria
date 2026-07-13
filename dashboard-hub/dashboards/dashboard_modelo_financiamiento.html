@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modelo de Financiamiento GRD 2025–2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#173352;
+  --navy-2:#0F2338;
+  --inst-blue:#0F69B4;
+  --inst-blue-border:#3E76A8;
+  --inst-blue-text:#0B4E86;
+  --inst-blue-bg:#E7F0FA;
+  --teal:#0E7C74;
+  --teal-light:#E4F3F1;
+  --amber:#C97F2B;
+  --amber-light:#FBEEDF;
+  --red:#B23A2E;
+  --red-light:#FBEAE8;
+  --paper:#F5F3EE;
+  --card:#FFFFFF;
+  --ink:#1B2430;
+  --ink-2:#5B6472;
+  --ink-3:#8B93A0;
+  --line:#E4E1D8;
+  --line-2:#D6D2C6;
+  --radius:10px;
+  --c-a:#0F69B4; /* GRD */
+  --c-b:#0E7C74; /* Ambulatorio MLE */
+  --c-c:#4C8FBD; /* HD */
+  --c-d:#8C6BB1; /* Trasplantes */
+  --c-e:#C97F2B; /* Salud Oral */
+  --c-f:#B23A2E; /* Farmacia */
+  --c-g:#6B7280; /* Egresos no validados */
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Sans', sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.display{font-family:'Libre Franklin', sans-serif;}
+.mono{font-family:'IBM Plex Mono', monospace;}
+
+/* ---------- shell ---------- */
+.shell{max-width:1180px;margin:0 auto;padding:0 24px 64px;}
+
+/* ---------- topbar ---------- */
+.topbar{
+  background:var(--navy);
+  color:#EDF1F5;
+  padding:14px 0;
+  border-bottom:3px solid var(--teal);
+}
+.topbar-inner{
+  max-width:1180px;margin:0 auto;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:14px;}
+.logo-slot{display:flex;align-items:center;gap:10px;}
+.logo-slot img{height:42px;width:auto;display:block;border-radius:4px;}
+.logo-badge{
+  height:42px;padding:0 12px;display:flex;align-items:center;justify-content:center;
+  background:#FFFFFF;border-radius:6px;color:var(--navy);font-family:'Libre Franklin',sans-serif;
+  font-weight:800;font-size:15px;letter-spacing:.04em;
+}
+.brand .eyebrow{
+  font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9FB3C8;
+  font-weight:600;
+}
+.brand h1{
+  font-size:17px;margin:0;font-weight:700;letter-spacing:.01em;
+}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.controls label{font-size:11px;color:#9FB3C8;margin-right:6px;}
+select#hospitalSelect, select#ssSelect{
+  background:var(--inst-blue);color:#FFFFFF;border:1px solid var(--inst-blue-border);border-radius:7px;
+  padding:8px 12px;font-size:13.5px;font-family:inherit;
+}
+select#ssSelect{min-width:220px;}
+select#hospitalSelect{min-width:280px;}
+.btn{
+  border:1px solid #3E76A8;background:transparent;color:#EDF1F5;border-radius:7px;
+  padding:8px 14px;font-size:13px;font-family:inherit;cursor:pointer;font-weight:500;
+}
+.btn:hover{background:rgba(255,255,255,.08);}
+.btn-accent{background:var(--teal);border-color:var(--teal);}
+.btn-accent:hover{background:#0A6B64;}
+
+/* ---------- tabbar ---------- */
+.tabbar{background:var(--card);border-bottom:1px solid var(--line-2);}
+.tabbar-inner{max-width:1180px;margin:0 auto;padding:0 24px;display:flex;gap:4px;}
+.tab-btn{
+  border:none;background:transparent;color:var(--ink-2);font-family:inherit;font-size:13.5px;
+  font-weight:600;padding:13px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;
+}
+.tab-btn:hover{color:var(--ink);}
+.tab-btn.active{color:var(--inst-blue-text);border-bottom-color:var(--inst-blue);}
+
+/* ---------- hospital header ---------- */
+.hospital-header{padding:28px 0 6px;}
+.hospital-header .kicker{
+  font-size:11.5px;color:var(--ink-2);letter-spacing:.04em;text-transform:uppercase;font-weight:600;
+}
+.hospital-header h2{
+  font-size:26px;margin:4px 0 2px;font-weight:700;color:var(--navy-2);
+}
+.hospital-header .sub{color:var(--ink-2);font-size:13px;}
+
+/* ---------- composition bar (signature) ---------- */
+.composition{margin:22px 0 8px;}
+.composition-bar{
+  display:flex;height:38px;border-radius:8px;overflow:hidden;border:1px solid var(--line-2);
+}
+.composition-bar .seg{height:100%;transition:width .4s ease;}
+.composition-legend{
+  display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:12px;
+}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2);}
+.legend-dot{width:9px;height:9px;border-radius:2px;flex:none;}
+.legend-item b{color:var(--ink);font-weight:600;}
+.legend-item .mono{color:var(--ink-3);}
+
+/* ---------- section ---------- */
+.section{margin-top:34px;}
+.section-title{
+  font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);
+  font-weight:600;margin:0 0 12px;display:flex;align-items:center;gap:8px;
+}
+.section-title .bar{width:16px;height:2px;background:var(--teal);display:inline-block;}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.kpi-grid-3{grid-template-columns:repeat(3,1fr);}
+.kpi-grid-2{grid-template-columns:repeat(2,1fr);}
+.kpi-grid-2 .value{font-size:28px;}
+.kpi-grid-4{grid-template-columns:repeat(4,1fr);}
+.kpi-grid-hero .kpi-card{padding:20px 22px;}
+.kpi-grid-hero .value{font-size:27px;}
+.kpi-card.tone-green{background:#E6F3EA;border-color:#C7E4CE;}
+.kpi-card.tone-green .value{color:#1E7A45;}
+.section-tight{margin-top:22px;}
+.section-tight + .section{margin-top:16px;}
+
+.kpi-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 18px;
+}
+.kpi-card .label{font-size:12px;color:var(--ink-2);margin:0 0 8px;}
+.note-mark{color:var(--teal);font-weight:700;margin-left:1px;}
+.kpi-card .value{font-size:24px;font-weight:600;margin:0;font-family:'IBM Plex Mono',monospace;}
+.kpi-card .foot{font-size:11.5px;color:var(--ink-3);margin-top:6px;}
+.kpi-card.tone-blue{background:var(--inst-blue-bg);border-color:#CBE0F2;}
+.kpi-card.tone-blue .value{color:var(--inst-blue-text);}
+.kpi-card.tone-teal{background:var(--teal-light);border-color:#CDE8E4;}
+.kpi-card.tone-teal .value{color:#0A5A54;}
+.kpi-card.tone-amber{background:var(--amber-light);border-color:#F2DCB8;}
+.kpi-card.tone-amber .value{color:#9C6420;}
+.kpi-card.tone-red{background:var(--red-light);border-color:#F2CFC9;}
+.kpi-card.tone-red .value{color:#8E2E24;}
+
+.subkpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
+.subkpi-grid-2{grid-template-columns:repeat(2,1fr);}
+.subkpi{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:13px 16px;
+}
+.subkpi .label{font-size:11.5px;color:var(--ink-2);margin:0 0 5px;}
+.subkpi .value{font-size:17px;font-weight:600;font-family:'IBM Plex Mono',monospace;}
+.subkpi .foot{font-size:11px;color:var(--ink-3);margin:4px 0 0;}
+.subkpi.tone-amber .foot,.subkpi.tone-green .foot{color:inherit;opacity:.75;}
+.subkpi.tone-amber{background:var(--amber-light);border-color:#F2DCB8;}
+.subkpi.tone-amber .value{color:#9C6420;}
+.subkpi.tone-green{background:#E6F3EA;border-color:#C7E4CE;}
+.subkpi.tone-green .value{color:#1E7A45;}
+
+/* ---------- two column ---------- */
+.two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;align-items:stretch;}
+.panel{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 20px;
+}
+.panel h3{font-size:14px;margin:0 0 14px;font-weight:600;color:var(--navy-2);}
+.chart-wrap{position:relative;height:290px;}
+
+table.data{width:100%;border-collapse:collapse;font-size:13px;}
+table.data th{
+  text-align:left;font-weight:500;color:var(--ink-3);font-size:11px;text-transform:uppercase;
+  letter-spacing:.03em;padding:6px 0;border-bottom:1px solid var(--line-2);
+}
+table.data td{padding:8px 0;border-bottom:1px solid var(--line);}
+table.data td.num{text-align:right;font-family:'IBM Plex Mono',monospace;}
+table.data td.num + td.num, table.data th.num + th.num{padding-left:22px;}
+table.data tr:last-child td{border-bottom:none;}
+.swatch{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:8px;}
+
+/* ---------- UPH panel ---------- */
+.uph-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.uph-compare{margin-top:6px;}
+.uph-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.uph-row .rlabel{width:190px;font-size:12.5px;color:var(--ink-2);flex:none;}
+.uph-track{flex:1;height:14px;background:var(--paper);border-radius:4px;overflow:hidden;border:1px solid var(--line-2);}
+.uph-fill{height:100%;}
+.uph-row .rval{width:110px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12.5px;flex:none;}
+.uph-note{
+  margin-top:14px;padding:12px 14px;border-radius:8px;font-size:12.5px;color:var(--ink-2);
+  background:var(--paper);border:1px solid var(--line-2);
+}
+.price-breakdown{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-2);}
+.price-breakdown-title{font-size:12px;font-weight:600;color:var(--ink-2);margin:0 0 8px;}
+
+/* ---------- hero cost race comparison ---------- */
+.panel-hero{padding:22px 24px;}
+.race-compare{margin-top:18px;}
+.race-row{margin-bottom:20px;}
+.race-row:last-child{margin-bottom:0;}
+.race-label{font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:8px;display:flex;align-items:baseline;gap:8px;}
+.race-sub{font-size:11.5px;font-weight:400;color:var(--ink-3);}
+.race-dot{width:10px;height:10px;border-radius:3px;flex:none;}
+.race-track{height:34px;background:var(--paper);border-radius:7px;overflow:hidden;border:1px solid var(--line-2);}
+.race-fill{height:100%;border-radius:7px 0 0 7px;transition:width .5s ease;min-width:2px;}
+.race-value-row{margin-top:6px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.race-value{font-size:19px;font-weight:600;color:var(--ink);}
+.race-breakdown{font-size:11.5px;color:var(--ink-3);}
+
+.delta-banner{
+  margin-top:22px;padding:16px 20px;border-radius:10px;background:var(--paper);
+  border:1px solid var(--line-2);text-align:center;
+}
+.delta-banner.tone-green{background:#E6F3EA;border-color:#C7E4CE;}
+.delta-banner.tone-red{background:#FBEAE8;border-color:#F2CFC9;}
+.delta-label{font-size:12.5px;color:var(--ink-2);margin:0 0 4px;}
+.delta-banner.tone-green .delta-label{color:#1E7A45;}
+.delta-banner.tone-red .delta-label{color:#8E2E24;}
+.delta-value{font-size:24px;font-weight:700;margin:0;font-family:'IBM Plex Mono',monospace;color:var(--ink);}
+.delta-banner.tone-green .delta-value{color:#1E7A45;}
+.delta-banner.tone-red .delta-value{color:#8E2E24;}
+
+/* ---------- comparison ---------- */
+.cmp-row{margin-bottom:22px;}
+.cmp-row:last-child{margin-bottom:0;}
+.cmp-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.cmp-head .name{font-size:13px;font-weight:600;color:var(--ink);}
+.cmp-head .pctile{font-size:12px;color:var(--teal);font-weight:600;}
+.cmp-track{position:relative;height:6px;background:var(--line);border-radius:3px;margin:34px 2px 14px;}
+.cmp-median{position:absolute;top:-5px;width:1px;height:16px;background:var(--ink-3);}
+.cmp-median::after{
+  content:attr(data-label);position:absolute;top:18px;left:50%;transform:translateX(-50%);
+  font-size:10.5px;color:var(--ink-3);white-space:nowrap;
+}
+.cmp-tick{position:absolute;top:-13px;width:1px;height:9px;background:var(--line-2);}
+.cmp-tick::after{
+  content:attr(data-label);position:absolute;top:-24px;left:50%;transform:translateX(-50%);
+  font-size:9.5px;color:var(--ink-3);white-space:nowrap;
+}
+.cmp-dot{
+  position:absolute;top:-6px;width:16px;height:16px;border-radius:50%;
+  background:var(--navy);border:2px solid #fff;box-shadow:0 0 0 1px var(--navy);
+  transform:translateX(-50%);
+}
+.cmp-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-top:2px;}
+
+.panel-inst{background:var(--inst-blue-bg);border-color:#CBE0F2;}
+.panel-intro{font-size:12.5px;color:var(--ink-2);margin:0 0 16px;line-height:1.5;}
+.panel-inst .subkpi{background:#FFFFFF;border-color:#CBE0F2;}
+.gestionable-total{margin-top:16px;border-top:1px solid #CBE0F2;padding-top:14px;}
+.gt-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--ink-2);}
+.gt-row .mono{font-family:'IBM Plex Mono',monospace;color:var(--ink);}
+.gt-row.gt-total{font-weight:600;color:var(--ink);border-top:1px solid #CBE0F2;border-bottom:1px solid #CBE0F2;margin:4px 0;}
+.gt-row.gt-total .mono{font-size:15px;}
+.gt-row.gt-pct .mono{color:var(--inst-blue-text);font-weight:600;}
+
+/* ---------- split columns (Hoja 2: costo real vs precio base) ---------- */
+.split-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch;}
+.split-col{display:flex;flex-direction:column;}
+.split-col-title{font-size:13.5px;margin:0 0 14px;font-weight:600;color:var(--navy-2);}
+.split-col .race-compare{flex:1;}
+
+/* ---------- capacidad instalada: gauge ---------- */
+.panel-capacidad{padding:22px 24px;}
+.gauge-row{margin:4px 0 26px;}
+.gauge-track{
+  position:relative;height:22px;background:var(--paper);border:1px solid var(--line-2);
+  border-radius:11px;overflow:visible;
+}
+.gauge-fill{
+  height:100%;border-radius:11px 0 0 11px;background:linear-gradient(90deg,#B23A2E,#C97F2B,#0E7C74);
+  transition:width .5s ease;min-width:2px;
+}
+.gauge-marker{
+  position:absolute;top:-8px;width:2px;height:38px;background:var(--navy);
+  transform:translateX(-50%);
+}
+.gauge-marker span{
+  position:absolute;top:-20px;left:50%;transform:translateX(-50%);white-space:nowrap;
+  font-size:10.5px;color:var(--navy);font-weight:600;background:#fff;padding:1px 5px;border-radius:4px;
+  border:1px solid var(--line-2);
+}
+.gauge-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-top:6px;}
+
+/* ---------- flow diagram ---------- */
+.flow-title{font-size:12.5px;font-weight:600;color:var(--ink-2);margin:6px 0 14px;}
+.flow-diagram{
+  display:flex;align-items:stretch;gap:8px;flex-wrap:wrap;justify-content:center;
+  padding:6px 0 4px;
+}
+.flow-card{
+  flex:1 1 118px;min-width:112px;max-width:150px;background:var(--paper);border:1px solid var(--line-2);
+  border-radius:9px;padding:12px 10px;text-align:center;display:flex;flex-direction:column;
+  justify-content:center;gap:6px;
+}
+.flow-card-highlight{background:var(--inst-blue-bg);border-color:#CBE0F2;}
+.flow-card-final{background:#E6F3EA;border-color:#B9DEC3;}
+.flow-card .flow-label{font-size:11px;color:var(--ink-2);margin:0;line-height:1.3;}
+.flow-card .flow-value{font-size:16px;font-weight:700;color:var(--ink);margin:0;}
+.flow-card-highlight .flow-value{color:var(--inst-blue-text);}
+.flow-card-final .flow-value{color:#1E7A45;font-size:19px;}
+.flow-op{
+  display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;
+  color:var(--ink-3);flex:0 0 auto;width:22px;
+}
+
+@media (max-width:900px){
+  .split-cols{grid-template-columns:1fr;}
+  .flow-diagram{flex-direction:column;align-items:stretch;}
+  .flow-card{max-width:none;}
+  .flow-op{transform:rotate(90deg);width:auto;padding:2px 0;}
+}
+
+.methodnote{
+  margin-top:26px;padding:12px 14px;border-radius:8px;font-size:12px;color:var(--ink-2);
+  background:var(--teal-light);border:1px solid #CDE8E4;line-height:1.5;
+}
+.methodnote .note-mark{margin-right:4px;}
+
+.footnote{
+  margin-top:36px;padding-top:16px;border-top:1px solid var(--line-2);
+  font-size:11.5px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;
+}
+
+@media (max-width:900px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .subkpi-grid{grid-template-columns:1fr;}
+  .two-col{grid-template-columns:1fr;}
+  .uph-grid{grid-template-columns:repeat(2,1fr);}
+  select#hospitalSelect, select#ssSelect{min-width:0;flex:1;}
+}
+
+@media print{
+  .topbar .controls{display:none;}
+  body{background:#fff;}
+  .panel,.kpi-card,.subkpi{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo-slot" id="logoSlot"><div class="logo-badge">MINSAL</div></div>
+      <div>
+        <div class="eyebrow">Subsecretaría de Redes Asistenciales · DIVPRE / FONASA</div>
+        <h1 class="display">Modelo de Financiamiento — Programa 05 GRD</h1>
+      </div>
+    </div>
+    <div class="controls">
+      <div>
+        <label for="ssSelect">Servicio de salud</label>
+        <select id="ssSelect"></select>
+      </div>
+      <div>
+        <label for="hospitalSelect">Establecimiento</label>
+        <select id="hospitalSelect"></select>
+      </div>
+      <button class="btn btn-accent" onclick="window.print()">Exportar resumen</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabbar">
+  <div class="tabbar-inner">
+    <button class="tab-btn active" data-page="page1" onclick="switchPage('page1')">Hoja 1 · Valorización de producción</button>
+    <button class="tab-btn" data-page="page2" onclick="switchPage('page2')">Hoja 2 · Egresos y CMA (detalle)</button>
+  </div>
+</div>
+
+<div class="shell">
+
+  <div id="page1" class="page">
+
+  <div class="hospital-header">
+    <div class="kicker" id="codDeisLabel">Cod DEIS —</div>
+    <h2 class="display" id="hospitalName">—</h2>
+    <div class="sub">Valorización integral de la producción 2025 · Análisis con variables productivas del Modelo de Financiamiento</div>
+  </div>
+
+  <div class="section section-tight">
+    <div class="section-title"><span class="bar"></span>Resultado presupuestario — vs. Gasto planificación 2026</div>
+    <div class="kpi-grid kpi-grid-4 kpi-grid-hero">
+      <div class="kpi-card tone-blue">
+        <p class="label">Producción 2025 valorizada</p>
+        <p class="value" id="kpiProduccion">—</p>
+        <p class="foot">M$2026</p>
+      </div>
+      <div class="kpi-card tone-blue">
+        <p class="label">Gasto planificación presupuestaria 2026<sup class="note-mark">*</sup></p>
+        <p class="value" id="kpiPlanificacion">—</p>
+        <p class="foot">M$2026</p>
+      </div>
+      <div class="kpi-card tone-blue">
+        <p class="label">% gasto planificado explicado por producción</p>
+        <p class="value" id="subPctAsociado">—</p>
+      </div>
+      <div class="kpi-card" id="subDeficitCard">
+        <p class="label" id="subDeficitLabel">Déficit presupuestario justificado por producción</p>
+        <p class="value" id="subDeficit">—</p>
+        <p class="foot" id="subDeficitMonto">—</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="panel">
+      <div id="cmpContainerGlobal"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="bar"></span>Componentes de la valorización</div>
+    <div class="panel" style="margin-bottom:14px;">
+      <div class="composition">
+        <div class="composition-bar" id="compositionBar"></div>
+        <div class="composition-legend" id="compositionLegend"></div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <h3>Monto por componente (M$2026)</h3>
+        <div class="chart-wrap"><canvas id="compChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <h3>Detalle</h3>
+        <table class="data" id="compTable"></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="bar"></span>Gasto adicional gestionable (fuera del modelo)</div>
+    <div class="panel panel-inst">
+      <p class="panel-intro">Estas componentes no forman parte del Modelo de Financiamiento, pero son gestionables por el establecimiento y ayudan a explicar parte de la diferencia entre lo valorizado por el modelo y el gasto de planificación 2026.</p>
+      <div class="kpi-grid kpi-grid-2">
+        <div class="subkpi">
+          <p class="label">Compra de servicios extrahospitalarios</p>
+          <p class="value" id="fmComprasVal">—</p>
+        </div>
+        <div class="subkpi">
+          <p class="label">Camas sociosanitarias</p>
+          <p class="value" id="fmSociosanitariosVal">—</p>
+        </div>
+      </div>
+      <div class="gestionable-total">
+        <div class="gt-row">
+          <span>Valorización del modelo (A–G)</span>
+          <span class="mono" id="gtModelo">—</span>
+        </div>
+        <div class="gt-row">
+          <span>+ Gasto gestionable fuera del modelo</span>
+          <span class="mono" id="gtGestionable">—</span>
+        </div>
+        <div class="gt-row gt-total">
+          <span>= Gasto total explicado</span>
+          <span class="mono" id="gtTotal">—</span>
+        </div>
+        <div class="gt-row">
+          <span>vs. Gasto planificación presupuestaria 2026<sup class="note-mark">*</sup></span>
+          <span class="mono" id="gtPlanificacion">—</span>
+        </div>
+        <div class="gt-row gt-pct">
+          <span>% del gasto de planificación 2026 explicado</span>
+          <span class="mono" id="gtPct">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="methodnote">
+    <span class="note-mark">*</span> El Gasto de Planificación Presupuestaria 2026 considera, para el St. 22, la planificación presupuestaria post medidas de ajuste enviada por los Servicios de Salud en junio; y para el St. 21, el gasto potencial al cierre estimado por DIGEDEP, descontando los gastos variables de este subtítulo.
+  </div>
+
+  </div>
+
+  <div id="page2" class="page" style="display:none">
+
+  <div class="hospital-header">
+    <div class="kicker" id="codDeisLabelP2">Cod DEIS —</div>
+    <h2 class="display" id="hospitalNameP2">—</h2>
+    <div class="sub">Zoom sobre el componente A · Egresos hospitalarios y Cirugía Mayor Ambulatoria (GRD)</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="bar"></span>Costo real 2025 vs. Valorización Nuevo Modelo · Comparación de precio base</div>
+    <div class="panel-intro" style="margin:0 0 12px;">Misma producción 2025 (egresos y CMA validados), vista desde dos ángulos: el monto total financiado (izquierda) y el precio unitario que lo explica (derecha).</div>
+    <div class="split-cols">
+      <div class="panel panel-hero split-col">
+        <h3 class="split-col-title">Monto total: costo real vs. modelo</h3>
+        <div class="race-compare">
+          <div class="race-row">
+            <div class="race-label">
+              <span class="race-dot" style="background:var(--c-f);"></span>
+              Costo real 2025 <span class="race-sub">(precio observado × producción)</span>
+            </div>
+            <div class="race-track"><div class="race-fill" id="raceObservado" style="background:var(--c-f);"></div></div>
+            <div class="race-value-row">
+              <div class="race-value mono" id="raceObservadoVal">—</div>
+              <div class="race-breakdown" id="raceObservadoBreak">—</div>
+            </div>
+          </div>
+          <div class="race-row">
+            <div class="race-label">
+              <span class="race-dot" style="background:var(--c-a);"></span>
+              Valorización Nuevo Modelo <span class="race-sub">(precio propuesto × producción + AT)</span>
+            </div>
+            <div class="race-track"><div class="race-fill" id="raceModelo" style="background:var(--c-a);"></div></div>
+            <div class="race-value-row">
+              <div class="race-value mono" id="raceModeloVal">—</div>
+              <div class="race-breakdown" id="raceModeloBreak">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="delta-banner" id="deltaBanner">
+          <p class="delta-label" id="deltaLabel">—</p>
+          <p class="delta-value" id="deltaValue">—</p>
+        </div>
+      </div>
+
+      <div class="panel split-col">
+        <h3 class="split-col-title">Precio unitario: observado vs. base propuesto</h3>
+        <div class="uph-grid" style="grid-template-columns:repeat(3,1fr);">
+          <div class="subkpi">
+            <p class="label">UPH total validada 2025 (EH + CMA)</p>
+            <p class="value" id="uphTotal">—</p>
+          </div>
+          <div class="subkpi">
+            <p class="label">Precio base propuesto</p>
+            <p class="value" id="uphPrecioBase">—</p>
+          </div>
+          <div class="subkpi">
+            <p class="label">Efecto mayor gasto observado</p>
+            <p class="value" id="uphEfecto">—</p>
+          </div>
+        </div>
+        <div class="uph-compare">
+          <div class="uph-row">
+            <div class="rlabel">Gasto unitario observado</div>
+            <div class="uph-track"><div class="uph-fill" id="barObservado" style="background:var(--c-f);"></div></div>
+            <div class="rval" id="valObservado">—</div>
+          </div>
+          <div class="uph-row">
+            <div class="rlabel">Precio base propuesto</div>
+            <div class="uph-track"><div class="uph-fill" id="barPropuesto" style="background:var(--c-a);"></div></div>
+            <div class="rval" id="valPropuesto">—</div>
+          </div>
+        </div>
+        <div class="uph-note" id="uphNote">—</div>
+        <div class="price-breakdown">
+          <p class="price-breakdown-title">Composición del precio del nuevo modelo</p>
+          <div class="gt-row">
+            <span>Precio base propuesto (grupo de establecimiento)</span>
+            <span class="mono" id="pbBase">—</span>
+          </div>
+          <div class="gt-row">
+            <span>+ Ajuste de zona</span>
+            <span class="mono" id="pbZona">—</span>
+          </div>
+          <div class="gt-row gt-total">
+            <span>= Precio base propuesto total</span>
+            <span class="mono" id="pbTotal">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="bar"></span>Capacidad instalada — potencial de gestión de camas</div>
+    <div class="panel-intro" style="margin:0 0 12px;">Comparación de la ocupación de camas del establecimiento con la mediana nacional (80,9%) y estimación del ingreso adicional que generaría cerrar esa brecha mediante una gestión de egresos más eficiente.</div>
+    <div class="panel panel-capacidad">
+
+      <div class="kpi-grid kpi-grid-4" style="margin-bottom:18px;">
+        <div class="kpi-card tone-blue">
+          <p class="label">Camas de dotación</p>
+          <p class="value" id="capCamas">—</p>
+          <p class="foot">Capacidad instalada</p>
+        </div>
+        <div class="kpi-card" id="capOcupacionCard">
+          <p class="label">% Ocupación de camas observada 2025</p>
+          <p class="value" id="capOcupacion">—</p>
+          <p class="foot" id="capOcupacionFoot">—</p>
+        </div>
+        <div class="kpi-card tone-blue">
+          <p class="label">Mediana nacional de ocupación</p>
+          <p class="value">80,9%</p>
+          <p class="foot">Referencia · 80 establecimientos GRD</p>
+        </div>
+        <div class="kpi-card tone-green" id="capIngresoCard">
+          <p class="label">Ingreso extra potencial al llegar a la mediana</p>
+          <p class="value" id="capIngresoExtra">—</p>
+          <p class="foot">M$2026 · valorizado a precio base propuesto</p>
+        </div>
+      </div>
+
+      <div class="gauge-row">
+        <div class="gauge-track">
+          <div class="gauge-fill" id="gaugeOcupacion"></div>
+          <div class="gauge-marker" id="gaugeMediana"><span>mediana país 80,9%</span></div>
+        </div>
+        <div class="gauge-scale"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+
+      <div class="flow-title">¿De dónde sale el ingreso extra potencial?</div>
+      <div class="flow-diagram">
+        <div class="flow-card">
+          <p class="flow-label">Días cama disponibles<br>para llegar a la mediana</p>
+          <p class="flow-value mono" id="flowDiasCama">—</p>
+        </div>
+        <div class="flow-op">÷</div>
+        <div class="flow-card">
+          <p class="flow-label">Promedio días<br>de estada</p>
+          <p class="flow-value mono" id="flowDiasEstada">—</p>
+        </div>
+        <div class="flow-op">=</div>
+        <div class="flow-card flow-card-highlight">
+          <p class="flow-label">Egresos extra<br>potenciales</p>
+          <p class="flow-value mono" id="flowEgresosExtra">—</p>
+        </div>
+        <div class="flow-op">×</div>
+        <div class="flow-card">
+          <p class="flow-label">Peso medio<br>observado (EH)</p>
+          <p class="flow-value mono" id="flowPesoMedio">—</p>
+        </div>
+        <div class="flow-op">=</div>
+        <div class="flow-card flow-card-highlight">
+          <p class="flow-label">UPH extra<br>potenciales</p>
+          <p class="flow-value mono" id="flowUphExtra">—</p>
+        </div>
+        <div class="flow-op">×</div>
+        <div class="flow-card">
+          <p class="flow-label">Precio base<br>propuesto</p>
+          <p class="flow-value mono" id="flowPrecioBase">—</p>
+        </div>
+        <div class="flow-op">=</div>
+        <div class="flow-card flow-card-final">
+          <p class="flow-label">Ingreso extra<br>potencial</p>
+          <p class="flow-value mono" id="flowIngresoFinal">—</p>
+        </div>
+      </div>
+
+      <div class="uph-note" id="capNote">—</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="bar"></span>Comparación con la red — Egresos y CMA</div>
+    <div class="panel">
+      <div id="cmpContainerGRD"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="bar"></span>Producción validada 2025 — Egresos y CMA</div>
+    <div class="panel">
+      <div class="uph-grid">
+        <div class="subkpi">
+          <p class="label">Egresos hospitalarios validados</p>
+          <p class="value" id="prodEH">—</p>
+        </div>
+        <div class="subkpi">
+          <p class="label">Peso medio egresos (PM EH)</p>
+          <p class="value" id="prodPMEH">—</p>
+        </div>
+        <div class="subkpi">
+          <p class="label">CMA validadas</p>
+          <p class="value" id="prodCMA">—</p>
+        </div>
+        <div class="subkpi">
+          <p class="label">Peso medio CMA (PM CMA)</p>
+          <p class="value" id="prodPMCMA">—</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="methodnote">
+    Esta hoja se irá ampliando con el detalle de precio base por grupo de establecimiento, ajuste por asignación de zona y ajustes de tecnología a nivel de prestación, a medida que se incorporen esas variables al modelo de datos.
+  </div>
+
+  </div>
+
+  <div class="footnote">
+    <span>Fuente: Valorización integral de la producción 2025, DIVPRE/FONASA · Junio 2026.</span>
+    <span id="updatedAt">—</span>
+  </div>
+
+</div>
+
+<script id="hospital-data" type="application/json">[{"codDeis": 108101, "nombre": "Hospital San Juan de Dios (Los Andes)", "componentes": {"grdGasto": 23256334.5742187, "grdAT": 859569.8, "ambulatorioMLE": 10836549, "hospDomiciliaria": 421943, "trasplantes": null, "saludOral": 502608, "farmacia": 3452367.96510497, "egresosNoValidados": 1114833.33479431}, "fueraModelo": {"comprasExtrahosp": 900890.401876, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 41312292.3214708, "presupuestoComparable": 37846277, "produccionValorizada": 39329372.3393237, "pctGastoAsociado": 0.952001695603887, "difGastoCorregido": -1982919.98214717, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0391873509598757}, "uph": {"uphTotal": 7510.88930034008, "uphUrgencia": 0, "gastoUnitarioObservado": 3243589.89493794, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 147240.894937935, "varPB": 0.0475530681256973, "efectoMayorGasto": 1105910.06236183}, "codSS": 27, "servicioSalud": "S.S. Aconcagua", "egresosCMA": {"cmaValidados": 1277, "pmCMA": 0.572894596711042, "ehValidados": 6938, "pmEH": 0.977126390939764, "pctEgresos": 0.555556367684895, "pctCMA": 0.0213902194692437, "pctCajaI": 0.576946587154138, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 153, "diasCamaDispDotacion": 55845, "diasEstadaREM": 45811, "pctOcupacion": 0.8203241113797117, "diasCamaDispExtra": 0, "promDiasEstada": 6.19, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.963672121621622, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 108100, "nombre": "Hospital de San Camilo (San Felipe)", "componentes": {"grdGasto": 32042672.8996281, "grdAT": 84378.8, "ambulatorioMLE": 13702178, "hospDomiciliaria": 469014, "trasplantes": null, "saludOral": 704227, "farmacia": 6086736.68947764, "egresosNoValidados": 2192795.04090559}, "fueraModelo": {"comprasExtrahosp": 1359996.05043433, "sociosanitarios": null}, "financiero": {"planificacion2026": 58530776.0384647, "presupuestoComparable": 54507029, "produccionValorizada": 53089207.3891058, "pctGastoAsociado": 0.907030642378927, "difGastoCorregido": -5441568.64935897, "pctPresupuestoAsociado": 0.973988279366791, "deficitJustificado": 0}, "uph": {"uphTotal": 10348.5339991158, "uphUrgencia": 0, "gastoUnitarioObservado": 2646897.16022748, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 27, "servicioSalud": "S.S. Aconcagua", "egresosCMA": {"cmaValidados": 3388, "pmCMA": 0.485341027139607, "ehValidados": 9018, "pmEH": 0.965202772140916, "pctEgresos": 0.463931139409777, "pctCMA": 0.0414055337920326, "pctCajaI": 0.505336673201809, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 232, "diasCamaDispDotacion": 84680, "diasEstadaREM": 55628, "pctOcupacion": 0.6569201700519604, "diasCamaDispExtra": 12913.235799381424, "promDiasEstada": 5.62, "egresosExtraPotenciales": 2297.7287899255202, "pesoMedioObsEH": 0.944726340232206, "uphExtraPotenciales": 2170.724910552512, "ingresoExtraPotencialM": 6721321.9060643595}}, {"codDeis": 103101, "nombre": "Hospital Dr. Carlos Cisternas (Calama)", "componentes": {"grdGasto": 31594953.6013773, "grdAT": 10372.6, "ambulatorioMLE": 12384886, "hospDomiciliaria": 960568, "trasplantes": null, "saludOral": 336711, "farmacia": 5487235.87869779, "egresosNoValidados": 584358.592098708}, "fueraModelo": {"comprasExtrahosp": 2182093.358524, "sociosanitarios": 569400}, "financiero": {"planificacion2026": 67538984.1166029, "presupuestoComparable": 64620519, "produccionValorizada": 50774727.0800751, "pctGastoAsociado": 0.751783991781916, "difGastoCorregido": -16764257.0365278, "pctPresupuestoAsociado": 0.785736912451525, "deficitJustificado": 0}, "uph": {"uphTotal": 8966.22259642916, "uphUrgencia": 748.2462, "gastoUnitarioObservado": 3943411.90552557, "precioBasePropuesto": 3523775.28681478, "mayorGastoPorUPH": 419636.618710787, "varPB": 0.119087224512011, "efectoMayorGasto": 3762555.33297379}, "codSS": 22, "servicioSalud": "S.S. Antofagasta", "egresosCMA": {"cmaValidados": 1653, "pmCMA": 0.551234722891286, "ehValidados": 9586, "pmEH": 0.840291216303971, "pctEgresos": 0.507967844538858, "pctCMA": 0.0180035929438825, "pctCajaI": 0.52597143748274, "precioBaseW": 3096349, "ajusteZona": 427426.286814781}, "capacidad": {"camas": 202, "diasCamaDispDotacion": 73730, "diasEstadaREM": 61211, "pctOcupacion": 0.830204801302048, "diasCamaDispExtra": 0, "promDiasEstada": 6.28, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.841721742696053, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 103100, "nombre": "Hospital Dr. Leonardo Guzmán (Antofagasta)", "componentes": {"grdGasto": 80368842.4643084, "grdAT": 817083.8, "ambulatorioMLE": 31934187, "hospDomiciliaria": 826676, "trasplantes": null, "saludOral": 826458, "farmacia": 20291715.7596277, "egresosNoValidados": 1594012.033812}, "fueraModelo": {"comprasExtrahosp": 3398337.857924, "sociosanitarios": 1043900}, "financiero": {"planificacion2026": 182088276.730135, "presupuestoComparable": 162112476, "produccionValorizada": 135064963.023936, "pctGastoAsociado": 0.741755402650716, "difGastoCorregido": -47023313.7061986, "pctPresupuestoAsociado": 0.833155882610393, "deficitJustificado": 0}, "uph": {"uphTotal": 23235.667000204, "uphUrgencia": 773.253200000001, "gastoUnitarioObservado": 4524030.42251025, "precioBasePropuesto": 3458856.69921173, "mayorGastoPorUPH": 1065173.72329852, "varPB": 0.30795543612468, "efectoMayorGasto": 24750021.9319318}, "codSS": 22, "servicioSalud": "S.S. Antofagasta", "egresosCMA": {"cmaValidados": 3831, "pmCMA": 0.482808926795789, "ehValidados": 19446, "pmEH": 1.09976478461634, "pctEgresos": 0.578515042193337, "pctCMA": 0.00809768733970454, "pctCajaI": 0.586612729533041, "precioBaseW": 3096349, "ajusteZona": 362507.699211729}, "capacidad": {"camas": 638, "diasCamaDispDotacion": 232870, "diasEstadaREM": 177082, "pctOcupacion": 0.7604328595353631, "diasCamaDispExtra": 11406.398448298914, "promDiasEstada": 8.91, "egresosExtraPotenciales": 1280.1793993601475, "pesoMedioObsEH": 1.09875960695389, "uphExtraPotenciales": 1406.6094136714228, "ingresoExtraPotencialM": 4865260.393651685}}, {"codDeis": 129104, "nombre": "Hospital Dr. Dino Stagno M.(Traiguén)", "componentes": {"grdGasto": 2975666.0632992, "grdAT": 0, "ambulatorioMLE": 3731987, "hospDomiciliaria": 0, "trasplantes": null, "saludOral": 163095, "farmacia": 602448.682034076, "egresosNoValidados": 0}, "fueraModelo": {"comprasExtrahosp": 247501.772365, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 11903272.6106009, "presupuestoComparable": 8544340, "produccionValorizada": 7473196.74533327, "pctGastoAsociado": 0.627827068219689, "difGastoCorregido": -4430075.86526761, "pctPresupuestoAsociado": 0.874637098398855, "deficitJustificado": 0}, "uph": {"uphTotal": 1233.581, "uphUrgencia": 0, "gastoUnitarioObservado": 2598530.7887911, "precioBasePropuesto": 2412217.81407074, "mayorGastoPorUPH": 186312.974720357, "varPB": 0.0772372103520554, "efectoMayorGasto": 229832.145668513}, "codSS": 35, "servicioSalud": "S.S. Araucanía Norte", "egresosCMA": {"cmaValidados": 0, "pmCMA": 0, "ehValidados": 1698, "pmEH": 0.726490577149588, "pctEgresos": 0.272016800894598, "pctCMA": 0, "pctCajaI": 0.272016800894598, "precioBaseW": 2343714, "ajusteZona": 68503.8140707387}, "capacidad": {"camas": 79, "diasCamaDispDotacion": 28835, "diasEstadaREM": 11257, "pctOcupacion": 0.3903936188659615, "diasCamaDispExtra": 12082.472535134191, "promDiasEstada": 6.63, "egresosExtraPotenciales": 1822.3940475315524, "pesoMedioObsEH": 0, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 129100, "nombre": "Hospital Dr. Mauricio Heyermann (Angol)", "componentes": {"grdGasto": 25709584.487287, "grdAT": 227604.8, "ambulatorioMLE": 18951702, "hospDomiciliaria": 467153, "trasplantes": null, "saludOral": 806675, "farmacia": 4771125.75803917, "egresosNoValidados": 1845286.62583715}, "fueraModelo": {"comprasExtrahosp": 1589803.483699, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 65416088.0063077, "presupuestoComparable": 59742781, "produccionValorizada": 50933845.0453262, "pctGastoAsociado": 0.778613435893857, "difGastoCorregido": -14482242.9609815, "pctPresupuestoAsociado": 0.85255229490114, "deficitJustificado": 0}, "uph": {"uphTotal": 8012.29479991498, "uphUrgencia": 0, "gastoUnitarioObservado": 3358638.95655072, "precioBasePropuesto": 3208766.66789143, "mayorGastoPorUPH": 149872.288659291, "varPB": 0.0467071321074823, "efectoMayorGasto": 1200820.95907619}, "codSS": 35, "servicioSalud": "S.S. Araucanía Norte", "egresosCMA": {"cmaValidados": 1942, "pmCMA": 0.454168692192614, "ehValidados": 8301, "pmEH": 0.858968702527036, "pctEgresos": 0.426491947303627, "pctCMA": 0.0251686154941988, "pctCajaI": 0.451660562797826, "precioBaseW": 3096349, "ajusteZona": 112417.667891431}, "capacidad": {"camas": 234, "diasCamaDispDotacion": 85410, "diasEstadaREM": 59275, "pctOcupacion": 0.6940053857862077, "diasCamaDispExtra": 9857.108521789884, "promDiasEstada": 6.62, "egresosExtraPotenciales": 1488.9892026872935, "pesoMedioObsEH": 0.852778553866786, "uphExtraPotenciales": 1269.778058990929, "ingresoExtraPotencialM": 4074421.5113099706}}, {"codDeis": 129106, "nombre": "Hospital San José (Victoria)", "componentes": {"grdGasto": 21032221.8620756, "grdAT": 376315.6, "ambulatorioMLE": 14004183, "hospDomiciliaria": 542039, "trasplantes": null, "saludOral": 544785, "farmacia": 4216283.5870352, "egresosNoValidados": 1312612.6933314}, "fueraModelo": {"comprasExtrahosp": 276731.377525, "sociosanitarios": null}, "financiero": {"planificacion2026": 54260244.9327809, "presupuestoComparable": 36909591, "produccionValorizada": 40715828.0491108, "pctGastoAsociado": 0.750380469154732, "difGastoCorregido": -13544416.8836701, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.103123251869975}, "uph": {"uphTotal": 6594.10340057813, "uphUrgencia": 0, "gastoUnitarioObservado": 3262259.52643296, "precioBasePropuesto": 3189549.90305908, "mayorGastoPorUPH": 72709.623373874, "varPB": 0.0227962018415634, "efectoMayorGasto": 479454.774744418}, "codSS": 35, "servicioSalud": "S.S. Araucanía Norte", "egresosCMA": {"cmaValidados": 1538, "pmCMA": 0.517161508485704, "ehValidados": 6309, "pmEH": 0.91911697583248, "pctEgresos": 0.462829660976636, "pctCMA": 0.0157989151799482, "pctCajaI": 0.478628576156584, "precioBaseW": 3096349, "ajusteZona": 93200.9030590843}, "capacidad": {"camas": 179, "diasCamaDispDotacion": 65335, "diasEstadaREM": 44825, "pctOcupacion": 0.6860794367490626, "diasCamaDispExtra": 8058.108655557217, "promDiasEstada": 6.46, "egresosExtraPotenciales": 1247.3852407983309, "pesoMedioObsEH": 0.89422204610951, "uphExtraPotenciales": 1115.4393823134872, "ingresoExtraPotencialM": 3557749.5737262624}}, {"codDeis": 121110, "nombre": "Hospital Dr. Abraham Godoy (Lautaro)", "componentes": {"grdGasto": 10023293.8611325, "grdAT": 4813.2, "ambulatorioMLE": 16457794, "hospDomiciliaria": 445195, "trasplantes": null, "saludOral": 477860, "farmacia": 2415299.57396395, "egresosNoValidados": 64078.5432143253}, "fueraModelo": {"comprasExtrahosp": 2152926.72644, "sociosanitarios": 569400}, "financiero": {"planificacion2026": 31193840.5421187, "presupuestoComparable": 26619427, "produccionValorizada": 29824255.6350965, "pctGastoAsociado": 0.956094380069264, "difGastoCorregido": -1369584.90702226, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.120394350903814}, "uph": {"uphTotal": 3152.43510017004, "uphUrgencia": 0, "gastoUnitarioObservado": 3831935.10084909, "precioBasePropuesto": 3179540.11506592, "mayorGastoPorUPH": 652394.985783166, "varPB": 0.205185329378881, "efectoMayorGasto": 2056632.85235779}, "codSS": 36, "servicioSalud": "S.S. Araucanía Sur", "egresosCMA": {"cmaValidados": 1834, "pmCMA": 0.607413958708868, "ehValidados": 2255, "pmEH": 0.903963591972495, "pctEgresos": 0.314637165452779, "pctCMA": 0.0681280674370039, "pctCajaI": 0.382765232889783, "precioBaseW": 3096349, "ajusteZona": 83191.1150659235}, "capacidad": {"camas": 72, "diasCamaDispDotacion": 26280, "diasEstadaREM": 23048, "pctOcupacion": 0.8770167427701674, "diasCamaDispExtra": 0, "promDiasEstada": 10.15, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.903774988991634, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 121109, "nombre": "Hospital Dr. Hernán Henríquez Aravena (Temuco)", "componentes": {"grdGasto": 102156351.359935, "grdAT": 2388251.5, "ambulatorioMLE": 43651573, "hospDomiciliaria": 1225417, "trasplantes": null, "saludOral": null, "farmacia": 35200415.2415328, "egresosNoValidados": 794120.973539431}, "fueraModelo": {"comprasExtrahosp": 7202622.047026, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 229450819.066402, "presupuestoComparable": 187830148, "produccionValorizada": 184622008.101468, "pctGastoAsociado": 0.804625622399889, "difGastoCorregido": -44828810.964934, "pctPresupuestoAsociado": 0.982919994832073, "deficitJustificado": 0}, "uph": {"uphTotal": 31832.7040030095, "uphUrgencia": 2373.3894, "gastoUnitarioObservado": 3580236.52594637, "precioBasePropuesto": 3209163.48640306, "mayorGastoPorUPH": 371073.039543307, "varPB": 0.115629210264765, "efectoMayorGasto": 11812258.2312791}, "codSS": 36, "servicioSalud": "S.S. Araucanía Sur", "egresosCMA": {"cmaValidados": 3390, "pmCMA": 0.610650914579676, "ehValidados": 25047, "pmEH": 1.18826994860001, "pctEgresos": 0.493235343898041, "pctCMA": 0.0116613310255605, "pctCajaI": 0.504896674923601, "precioBaseW": 3096349, "ajusteZona": 112814.486403061}, "capacidad": {"camas": 725, "diasCamaDispDotacion": 264625, "diasEstadaREM": 209583, "pctOcupacion": 0.792, "diasCamaDispExtra": 4608.361873066945, "promDiasEstada": 8.3, "egresosExtraPotenciales": 555.2243220562584, "pesoMedioObsEH": 1.18794562334218, "uphExtraPotenciales": 659.5763033598612, "ingresoExtraPotencialM": 2116688.1892391746}}, {"codDeis": 200717, "nombre": "Hospital Padre Las Casas", "componentes": {"grdGasto": 29194826.6563153, "grdAT": 474056.3, "ambulatorioMLE": 19173844, "hospDomiciliaria": 616204, "trasplantes": null, "saludOral": 916126, "farmacia": 6945263.1689313, "egresosNoValidados": 18276.4901033613}, "fueraModelo": {"comprasExtrahosp": 1505313.93624325, "sociosanitarios": 759200}, "financiero": {"planificacion2026": 67105880.7907335, "presupuestoComparable": 59863201, "produccionValorizada": 57320320.1252466, "pctGastoAsociado": 0.854177300853815, "difGastoCorregido": -9785560.66548689, "pctPresupuestoAsociado": 0.957521802505125, "deficitJustificado": 0}, "uph": {"uphTotal": 9164.10560396191, "uphUrgencia": 0, "gastoUnitarioObservado": 3690406.79003905, "precioBasePropuesto": 3185780.25156034, "mayorGastoPorUPH": 504626.538478707, "varPB": 0.158399669353073, "efectoMayorGasto": 4624450.88918062}, "codSS": 36, "servicioSalud": "S.S. Araucanía Sur", "egresosCMA": {"cmaValidados": 4004, "pmCMA": 0.548518856160843, "ehValidados": 6693, "pmEH": 1.04106321588135, "pctEgresos": 0.443122483394341, "pctCMA": 0.0696493478816834, "pctCajaI": 0.512771831276024, "precioBaseW": 3096349, "ajusteZona": 89431.2515603422}, "capacidad": {"camas": 225, "diasCamaDispDotacion": 82125, "diasEstadaREM": 68669, "pctOcupacion": 0.836152207001522, "diasCamaDispExtra": 0, "promDiasEstada": 10.27, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.04333892627486, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 121114, "nombre": "Hospital de Intercultura (Nueva Imperial)", "componentes": {"grdGasto": 17906536.0052572, "grdAT": 564510.6, "ambulatorioMLE": 11830238, "hospDomiciliaria": 1301382, "trasplantes": null, "saludOral": 1307715, "farmacia": 6131370.54512638, "egresosNoValidados": 114685.252159937}, "fueraModelo": {"comprasExtrahosp": 3606417.599395, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 48961315.241544, "presupuestoComparable": 35888103, "produccionValorizada": 39041752.1503836, "pctGastoAsociado": 0.797399987271102, "difGastoCorregido": -9919563.09116042, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0878745012068101}, "uph": {"uphTotal": 5647.51400015303, "uphUrgencia": 0, "gastoUnitarioObservado": 3209026.46779106, "precioBasePropuesto": 3170693.51307, "mayorGastoPorUPH": 38332.9547210536, "varPB": 0.0120897698131467, "efectoMayorGasto": 216485.898454383}, "codSS": 36, "servicioSalud": "S.S. Araucanía Sur", "egresosCMA": {"cmaValidados": 2111, "pmCMA": 0.541599099928465, "ehValidados": 4621, "pmEH": 0.974723717854153, "pctEgresos": 0.371444149387026, "pctCMA": 0.0243440292247808, "pctCajaI": 0.395788178611807, "precioBaseW": 3096349, "ajusteZona": 74344.5130700018}, "capacidad": {"camas": 142, "diasCamaDispDotacion": 51830, "diasEstadaREM": 44103, "pctOcupacion": 0.8509164576500097, "diasCamaDispExtra": 0, "promDiasEstada": 9.5, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.977792763299591, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 121117, "nombre": "Hospital de Pitrufquén", "componentes": {"grdGasto": 10830086.4582603, "grdAT": 6106.3, "ambulatorioMLE": 9560870, "hospDomiciliaria": 415125, "trasplantes": null, "saludOral": 500172, "farmacia": 2991722.06615014, "egresosNoValidados": 63823.575674049}, "fueraModelo": {"comprasExtrahosp": 1011167.262039, "sociosanitarios": null}, "financiero": {"planificacion2026": 30618858.954654, "presupuestoComparable": 26537023, "produccionValorizada": 24304081.8244105, "pctGastoAsociado": 0.793761840060874, "difGastoCorregido": -6314777.13024347, "pctPresupuestoAsociado": 0.915855626473644, "deficitJustificado": 0}, "uph": {"uphTotal": 3423.43540210849, "uphUrgencia": 0, "gastoUnitarioObservado": 3481398.28981188, "precioBasePropuesto": 3163514.18565986, "mayorGastoPorUPH": 317884.104152029, "varPB": 0.100484488292479, "efectoMayorGasto": 1088255.6959216}, "codSS": 36, "servicioSalud": "S.S. Araucanía Sur", "egresosCMA": {"cmaValidados": 1095, "pmCMA": 0.627668127652008, "ehValidados": 2888, "pmEH": 0.947416482801086, "pctEgresos": 0.327499512584105, "pctCMA": 0.0482985720328871, "pctCajaI": 0.375798084616992, "precioBaseW": 3096349, "ajusteZona": 67165.1856598546}, "capacidad": {"camas": 74, "diasCamaDispDotacion": 27010, "diasEstadaREM": 24056, "pctOcupacion": 0.8906330988522769, "diasCamaDispExtra": 0, "promDiasEstada": 8.27, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.948020797524923, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 121121, "nombre": "Hospital de Villarrica", "componentes": {"grdGasto": 24423341.2571142, "grdAT": 258143.1, "ambulatorioMLE": 14433984, "hospDomiciliaria": 687687, "trasplantes": null, "saludOral": 622640, "farmacia": 5132557.41645182, "egresosNoValidados": -2182635.68589859}, "fueraModelo": {"comprasExtrahosp": 1870874.520289, "sociosanitarios": null}, "financiero": {"planificacion2026": 51653634.9164229, "presupuestoComparable": 59821876, "produccionValorizada": 45558352.773566, "pctGastoAsociado": 0.881997033650794, "difGastoCorregido": -6095282.14285683, "pctPresupuestoAsociado": 0.761566768209777, "deficitJustificado": 0}, "uph": {"uphTotal": 7647.42406441411, "uphUrgencia": 16.0455, "gastoUnitarioObservado": 3534664.00071141, "precioBasePropuesto": 3193669.01212708, "mayorGastoPorUPH": 340994.988584337, "varPB": 0.106772175604141, "efectoMayorGasto": 2607733.28154447}, "codSS": 36, "servicioSalud": "S.S. Araucanía Sur", "egresosCMA": {"cmaValidados": 2807, "pmCMA": 0.574627360352732, "ehValidados": 5824, "pmEH": 1.03613411124725, "pctEgresos": 0.396756736525828, "pctCMA": 0.0809366049155272, "pctCajaI": 0.477693341441355, "precioBaseW": 3096349, "ajusteZona": 97320.0121270756}, "capacidad": {"camas": 103, "diasCamaDispDotacion": 37595, "diasEstadaREM": 34526, "pctOcupacion": 0.9183668040962893, "diasCamaDispExtra": 0, "promDiasEstada": 5.88, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.905418675519237, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 128109, "nombre": "Hospital Provincial Dr. Rafael Avaría (Curanilahue)", "componentes": {"grdGasto": 17265496.9342119, "grdAT": 0, "ambulatorioMLE": 13927586, "hospDomiciliaria": 154780, "trasplantes": null, "saludOral": 469709, "farmacia": 3131169.1641184, "egresosNoValidados": 85765.8160862183}, "fueraModelo": {"comprasExtrahosp": 965882.13702219, "sociosanitarios": null}, "financiero": {"planificacion2026": 59334668.0762351, "presupuestoComparable": 38861984, "produccionValorizada": 34948741.0983303, "pctGastoAsociado": 0.589010476192891, "difGastoCorregido": -24385926.9779047, "pctPresupuestoAsociado": 0.899304088497652, "deficitJustificado": 0}, "uph": {"uphTotal": 5294.14500027206, "uphUrgencia": 42.1760000000002, "gastoUnitarioObservado": 4312019.21606243, "precioBasePropuesto": 3261243.68209119, "mayorGastoPorUPH": 1050775.53397124, "varPB": 0.322200864578587, "efectoMayorGasto": 5562958.03958202}, "codSS": 34, "servicioSalud": "S.S. Arauco", "egresosCMA": {"cmaValidados": 1093, "pmCMA": 0.540584629397973, "ehValidados": 5325, "pmEH": 0.883246197246963, "pctEgresos": 0.395407655263372, "pctCMA": 0.0231792502833861, "pctCajaI": 0.418586905546758, "precioBaseW": 3096349, "ajusteZona": 164894.682091194}, "capacidad": {"camas": 129, "diasCamaDispDotacion": 47085, "diasEstadaREM": 33805, "pctOcupacion": 0.7179568864818945, "diasCamaDispExtra": 4306.290595345705, "promDiasEstada": 6.3, "egresosExtraPotenciales": 683.5381897374135, "pesoMedioObsEH": 0.881735800857729, "uphExtraPotenciales": 602.7000931449606, "ingresoExtraPotencialM": 1965551.8709647746}}, {"codDeis": 101100, "nombre": "Hospital Dr. Juan Noé Crevanni (Arica)", "componentes": {"grdGasto": 53802097.7898398, "grdAT": 353440.8, "ambulatorioMLE": 29287339, "hospDomiciliaria": 1954277, "trasplantes": 18311.316087, "saludOral": 1954537, "farmacia": 12230431.0696487, "egresosNoValidados": 1381047.35074528}, "fueraModelo": {"comprasExtrahosp": 4294922.62051, "sociosanitarios": null}, "financiero": {"planificacion2026": 101614235.097905, "presupuestoComparable": 88794726, "produccionValorizada": 99600433.9755755, "pctGastoAsociado": 0.98018189951054, "difGastoCorregido": -2013801.12232989, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.121693128210965}, "uph": {"uphTotal": 15726.5390874171, "uphUrgencia": 333.7382, "gastoUnitarioObservado": 3044415.81327799, "precioBasePropuesto": 3421102.22031542, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 20, "servicioSalud": "S.S. Arica y Parinacota", "egresosCMA": {"cmaValidados": 2857, "pmCMA": 0.485388904588063, "ehValidados": 16013, "pmEH": 0.895508835759008, "pctEgresos": 0.468186166661859, "pctCMA": 0.0247756047104574, "pctCajaI": 0.492961771372316, "precioBaseW": 3096349, "ajusteZona": 324753.22031542}, "capacidad": {"camas": 318, "diasCamaDispDotacion": 116070, "diasEstadaREM": 89033, "pctOcupacion": 0.7670629792366676, "diasCamaDispExtra": 4915.762862945227, "promDiasEstada": 5.42, "egresosExtraPotenciales": 906.9673178865734, "pesoMedioObsEH": 0.89743828348663, "uphExtraPotenciales": 813.9471929425991, "ingresoExtraPotencialM": 2784596.5489954296}}, {"codDeis": 104103, "nombre": "Hospital Provincial del Huasco Monseñor Fernando Ariztía Ruiz (Vallenar)", "componentes": {"grdGasto": 15813807.0712475, "grdAT": 176410.6, "ambulatorioMLE": 8595784, "hospDomiciliaria": 244410, "trasplantes": 88516.41744, "saludOral": 220356, "farmacia": 1994882.48825394, "egresosNoValidados": 1460167.71782344}, "fueraModelo": {"comprasExtrahosp": 2182820.363844, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 36190816.2717983, "presupuestoComparable": 31986817, "produccionValorizada": 27134166.5769414, "pctGastoAsociado": 0.749752820526619, "difGastoCorregido": -9056649.69485686, "pctPresupuestoAsociado": 0.848292175396553, "deficitJustificado": 0}, "uph": {"uphTotal": 4801.6846004251, "uphUrgencia": 0, "gastoUnitarioObservado": 3454707.98801251, "precioBasePropuesto": 3293387.29783449, "mayorGastoPorUPH": 161320.69017802, "varPB": 0.0489832125981943, "efectoMayorGasto": 774611.073757744}, "codSS": 23, "servicioSalud": "S.S. Atacama", "egresosCMA": {"cmaValidados": 733, "pmCMA": 0.509472851319242, "ehValidados": 5062, "pmEH": 0.874800671751895, "pctEgresos": 0.467382803752816, "pctCMA": 0.0281837451717454, "pctCajaI": 0.495566548924561, "precioBaseW": 3096349, "ajusteZona": 197038.297834491}, "capacidad": {"camas": 115, "diasCamaDispDotacion": 41975, "diasEstadaREM": 32574, "pctOcupacion": 0.7760333531864205, "diasCamaDispExtra": 1401.1815384864808, "promDiasEstada": 5.88, "egresosExtraPotenciales": 238.29618001470763, "pesoMedioObsEH": 0.857454681580372, "uphExtraPotenciales": 204.32817515633013, "ingresoExtraPotencialM": 672931.8166495584}}, {"codDeis": 104100, "nombre": "Hospital San José del Carmen (Copiapó)", "componentes": {"grdGasto": 36673343.2681688, "grdAT": 476801.2, "ambulatorioMLE": 17170071, "hospDomiciliaria": 2473541, "trasplantes": 69510.89472, "saludOral": 347300, "farmacia": 8483052.33825049, "egresosNoValidados": 720124.994166176}, "fueraModelo": {"comprasExtrahosp": 9695513.911527, "sociosanitarios": null}, "financiero": {"planificacion2026": 80687886.5553757, "presupuestoComparable": 68728245, "produccionValorizada": 65693619.7011393, "pctGastoAsociado": 0.814169542736184, "difGastoCorregido": -14994266.8542364, "pctPresupuestoAsociado": 0.955846023729244, "deficitJustificado": 0}, "uph": {"uphTotal": 11076.452300238, "uphUrgencia": 2.4027, "gastoUnitarioObservado": 4306632.87000351, "precioBasePropuesto": 3310928.65062766, "mayorGastoPorUPH": 995704.219375845, "varPB": 0.300732611434283, "efectoMayorGasto": 11028870.2910623}, "codSS": 23, "servicioSalud": "S.S. Atacama", "egresosCMA": {"cmaValidados": 1980, "pmCMA": 0.424362878787879, "ehValidados": 10696, "pmEH": 0.957013257314701, "pctEgresos": 0.520529668784589, "pctCMA": 0.026246489105178, "pctCajaI": 0.546776157889767, "precioBaseW": 3096349, "ajusteZona": 214579.650627664}, "capacidad": {"camas": 312, "diasCamaDispDotacion": 113880, "diasEstadaREM": 91842, "pctOcupacion": 0.8064805057955743, "diasCamaDispExtra": 334.1446957198484, "promDiasEstada": 8.42, "egresosExtraPotenciales": 39.68464319713164, "pesoMedioObsEH": 0.957695876477595, "uphExtraPotenciales": 38.005819149377615, "ingresoExtraPotencialM": 125834.55551224771}}, {"codDeis": 125100, "nombre": "Hospital Regional (Coihaique)", "componentes": {"grdGasto": 31613116.5244432, "grdAT": 359985.5, "ambulatorioMLE": 17910640, "hospDomiciliaria": 1717434, "trasplantes": null, "saludOral": 428477, "farmacia": 7742965.15336571, "egresosNoValidados": 2865857.7233961}, "fueraModelo": {"comprasExtrahosp": 6996608.122429, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 98250077.2375319, "presupuestoComparable": 75573520, "produccionValorizada": 59772618.1778089, "pctGastoAsociado": 0.608372225838572, "difGastoCorregido": -38477459.059723, "pctPresupuestoAsociado": 0.7909201288733, "deficitJustificado": 0}, "uph": {"uphTotal": 7898.14719963366, "uphUrgencia": 0, "gastoUnitarioObservado": 4545095.05766865, "precioBasePropuesto": 4002599.05587851, "mayorGastoPorUPH": 542496.001790137, "varPB": 0.135535934080979, "efectoMayorGasto": 4284713.27735123}, "codSS": 40, "servicioSalud": "S.S. Aysén", "egresosCMA": {"cmaValidados": 955, "pmCMA": 0.499050575911012, "ehValidados": 7782, "pmEH": 0.953682073970527, "pctEgresos": 0.385896020188491, "pctCMA": 0.0117447150983576, "pctCajaI": 0.397640735286849, "precioBaseW": 3096349, "ajusteZona": 906250.055878513}, "capacidad": {"camas": 152, "diasCamaDispDotacion": 55480, "diasEstadaREM": 40672, "pctOcupacion": 0.7330930064888248, "diasCamaDispExtra": 4234.326903043003, "promDiasEstada": 4.73, "egresosExtraPotenciales": 895.2065334128969, "pesoMedioObsEH": 0.943510263861444, "uphExtraPotenciales": 844.6365525508909, "ingresoExtraPotencialM": 3380741.467800675}}, {"codDeis": 125101, "nombre": "Hospital de Puerto Aisén", "componentes": {"grdGasto": 6179745.19698238, "grdAT": 0, "ambulatorioMLE": 5972668, "hospDomiciliaria": 413294, "trasplantes": null, "saludOral": 409678, "farmacia": 2644461.19359123, "egresosNoValidados": 0}, "fueraModelo": {"comprasExtrahosp": 1282665.910731, "sociosanitarios": 189800}, "financiero": {"planificacion2026": 32152662.6793375, "presupuestoComparable": 22663930, "produccionValorizada": 15619846.3905736, "pctGastoAsociado": 0.485802577110092, "difGastoCorregido": -16532816.2887638, "pctPresupuestoAsociado": 0.689194080222345, "deficitJustificado": 0}, "uph": {"uphTotal": 1485.0474, "uphUrgencia": 0, "gastoUnitarioObservado": 6350412.6869927, "precioBasePropuesto": 4161311.75138409, "mayorGastoPorUPH": 2189100.93560861, "varPB": 0.526060306556099, "efectoMayorGasto": 3250918.65276314}, "codSS": 40, "servicioSalud": "S.S. Aysén", "egresosCMA": {"cmaValidados": 729, "pmCMA": 0.529149931412894, "ehValidados": 1405, "pmEH": 0.782417864768683, "pctEgresos": 0.299602086745957, "pctCMA": 0.0219481471422036, "pctCajaI": 0.321550233888161, "precioBaseW": 3096349, "ajusteZona": 1064962.75138409}, "capacidad": {"camas": 44, "diasCamaDispDotacion": 16060, "diasEstadaREM": 10390, "pctOcupacion": 0.6469489414694894, "diasCamaDispExtra": 2609.199892986132, "promDiasEstada": 7.4, "egresosExtraPotenciales": 352.59458013326105, "pesoMedioObsEH": 0, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 120101, "nombre": "Complejo Asistencial Dr. Víctor Ríos Ruiz (Los Angeles)", "componentes": {"grdGasto": 96271390.4923039, "grdAT": 1409075.1, "ambulatorioMLE": 49062149, "hospDomiciliaria": 2994493, "trasplantes": 29914.13805, "saludOral": 1383602, "farmacia": 24219395.1210227, "egresosNoValidados": 1499490.53245369}, "fueraModelo": {"comprasExtrahosp": 2443603.73217914, "sociosanitarios": null}, "financiero": {"planificacion2026": 189492365.308164, "presupuestoComparable": 160423755, "produccionValorizada": 175370018.851377, "pctGastoAsociado": 0.925472741691623, "difGastoCorregido": -14122346.4567869, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0931673981286414}, "uph": {"uphTotal": 30232.6177971433, "uphUrgencia": 1311.9497, "gastoUnitarioObservado": 3141268.98888393, "precioBasePropuesto": 3184355.0941659, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 33, "servicioSalud": "S.S. Biobío", "egresosCMA": {"cmaValidados": 5158, "pmCMA": 0.499973807601572, "ehValidados": 25525, "pmEH": 1.08339874231281, "pctEgresos": 0.509921992053108, "pctCMA": 0.0297794258870266, "pctCajaI": 0.539701417940135, "precioBaseW": 3096349, "ajusteZona": 88006.0941659044}, "capacidad": {"camas": 538, "diasCamaDispDotacion": 196370, "diasEstadaREM": 175758, "pctOcupacion": 0.8950348831287875, "diasCamaDispExtra": 0, "promDiasEstada": 6.77, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.08283744415344, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 133155, "nombre": "Hospital de Ancud", "componentes": {"grdGasto": 10043739.4537581, "grdAT": 0, "ambulatorioMLE": 7784647, "hospDomiciliaria": 611599, "trasplantes": null, "saludOral": 57942, "farmacia": 793968.663298999, "egresosNoValidados": 0}, "fueraModelo": {"comprasExtrahosp": 1742275.477983, "sociosanitarios": 284700}, "financiero": {"planificacion2026": 36362375.5372782, "presupuestoComparable": 35430916, "produccionValorizada": 19291896.1170571, "pctGastoAsociado": 0.530545538678554, "difGastoCorregido": -17070479.420221, "pctPresupuestoAsociado": 0.544493292723709, "deficitJustificado": 0}, "uph": {"uphTotal": 2743.6211, "uphUrgencia": 0, "gastoUnitarioObservado": 5136616.62842783, "precioBasePropuesto": 3660760.39208116, "mayorGastoPorUPH": 1475856.23634668, "varPB": 0.403155650268508, "efectoMayorGasto": 4049190.31060733}, "codSS": 53, "servicioSalud": "S.S. Chiloé", "egresosCMA": {"cmaValidados": 542, "pmCMA": 0.499032287822878, "ehValidados": 3509, "pmEH": 0.704800683955543, "pctEgresos": 0.407732089674537, "pctCMA": 0.00699532300723493, "pctCajaI": 0.414727412681772, "precioBaseW": 3096349, "ajusteZona": 564411.392081158}, "capacidad": {"camas": 65, "diasCamaDispDotacion": 23725, "diasEstadaREM": 15814, "pctOcupacion": 0.666554267650158, "diasCamaDispExtra": 3389.3634782749696, "promDiasEstada": 4.51, "egresosExtraPotenciales": 751.5218355376873, "pesoMedioObsEH": 0, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 133150, "nombre": "Hospital de Castro", "componentes": {"grdGasto": 26918051.9619969, "grdAT": 386822.8, "ambulatorioMLE": 11815078, "hospDomiciliaria": 459979, "trasplantes": null, "saludOral": 261348, "farmacia": 4548233.07327239, "egresosNoValidados": 899912.617301235}, "fueraModelo": {"comprasExtrahosp": 3085908.421218, "sociosanitarios": null}, "financiero": {"planificacion2026": 57302264.1979327, "presupuestoComparable": 44233519, "produccionValorizada": 44389512.8352693, "pctGastoAsociado": 0.774655477520742, "difGastoCorregido": -12912751.3626634, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.00352659790122667}, "uph": {"uphTotal": 7650.91590382588, "uphUrgencia": 0, "gastoUnitarioObservado": 4632855.60351526, "precioBasePropuesto": 3518278.37351295, "mayorGastoPorUPH": 1114577.23000231, "varPB": 0.316796203050136, "efectoMayorGasto": 8527536.65506687}, "codSS": 53, "servicioSalud": "S.S. Chiloé", "egresosCMA": {"cmaValidados": 2027, "pmCMA": 0.558267292486645, "ehValidados": 6801, "pmEH": 0.95858081193287, "pctEgresos": 0.577003059802446, "pctCMA": 0.0381589233120043, "pctCajaI": 0.61516198311445, "precioBaseW": 3096349, "ajusteZona": 421929.373512952}, "capacidad": {"camas": 136, "diasCamaDispDotacion": 49640, "diasEstadaREM": 41467, "pctOcupacion": 0.8353545527800161, "diasCamaDispExtra": 0, "promDiasEstada": 5.94, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.955872990399771, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 118100, "nombre": "Hospital Clínico Regional Dr. Guillermo Grant Benavente (Concepción)", "componentes": {"grdGasto": 143790535.610169, "grdAT": 5362537.4, "ambulatorioMLE": 63936552, "hospDomiciliaria": 3491045, "trasplantes": 470528.786667, "saludOral": 270276, "farmacia": 40976444.8567953, "egresosNoValidados": 984670.918833792}, "fueraModelo": {"comprasExtrahosp": 1645138.357104, "sociosanitarios": 1613300}, "financiero": {"planificacion2026": 301540323.31295, "presupuestoComparable": 235553661, "produccionValorizada": 258297919.653632, "pctGastoAsociado": 0.856594954916065, "difGastoCorregido": -43242403.6593179, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0965565916363815}, "uph": {"uphTotal": 44401.4106988777, "uphUrgencia": 2943.0679, "gastoUnitarioObservado": 3607733.53963182, "precioBasePropuesto": 3238422.68402981, "mayorGastoPorUPH": 369310.855602007, "varPB": 0.11404034977375, "efectoMayorGasto": 16397922.9751386}, "codSS": 31, "servicioSalud": "S.S. Concepción", "egresosCMA": {"cmaValidados": 5614, "pmCMA": 0.656177698543982, "ehValidados": 30489, "pmEH": 1.33548588340883, "pctEgresos": 0.539042569939052, "pctCMA": 0.0190190424521207, "pctCajaI": 0.558061612391173, "precioBaseW": 3096349, "ajusteZona": 142073.684029811}, "capacidad": {"camas": 817, "diasCamaDispDotacion": 298205, "diasEstadaREM": 237770, "pctOcupacion": 0.7973374021227009, "diasCamaDispExtra": 3601.507103856126, "promDiasEstada": 7.75, "egresosExtraPotenciales": 464.7105940459517, "pesoMedioObsEH": 1.33642754789522, "uphExtraPotenciales": 621.0520396817623, "ingresoExtraPotencialM": 2011229.0132684007}}, {"codDeis": 118105, "nombre": "Hospital San José (Coronel)", "componentes": {"grdGasto": 19170421.4676029, "grdAT": 0, "ambulatorioMLE": 9225746, "hospDomiciliaria": 665062, "trasplantes": null, "saludOral": 127132, "farmacia": 1977419.21281849, "egresosNoValidados": 193092.159006229}, "fueraModelo": {"comprasExtrahosp": 36604.6434240005, "sociosanitarios": 759200}, "financiero": {"planificacion2026": 36001782.8164574, "presupuestoComparable": 33536270, "produccionValorizada": 31165780.6804214, "pctGastoAsociado": 0.865673259552431, "difGastoCorregido": -4836002.13603601, "pctPresupuestoAsociado": 0.929315653780858, "deficitJustificado": 0}, "uph": {"uphTotal": 5979.41840425098, "uphUrgencia": 383.2873, "gastoUnitarioObservado": 2518544.51432743, "precioBasePropuesto": 3206067.91021246, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 31, "servicioSalud": "S.S. Concepción", "egresosCMA": {"cmaValidados": 1263, "pmCMA": 0.570012670148497, "ehValidados": 6778, "pmEH": 0.775965240757366, "pctEgresos": 0.374554432828393, "pctCMA": 0.0409181621409589, "pctCajaI": 0.415472594969352, "precioBaseW": 3096349, "ajusteZona": 109718.910212462}, "capacidad": {"camas": 112, "diasCamaDispDotacion": 40880, "diasEstadaREM": 31869, "pctOcupacion": 0.7795743639921722, "diasCamaDispExtra": 1219.8724548737935, "promDiasEstada": 4.66, "egresosExtraPotenciales": 261.77520490853937, "pesoMedioObsEH": 0.776973305084746, "uphExtraPotenciales": 203.39234614702445, "ingresoExtraPotencialM": 652089.6741648}}, {"codDeis": 118103, "nombre": "Hospital Traumatológico de Concepción", "componentes": {"grdGasto": 15986512.5088918, "grdAT": 1341612.9, "ambulatorioMLE": 2688784, "hospDomiciliaria": 0, "trasplantes": null, "saludOral": null, "farmacia": 601973.751382996, "egresosNoValidados": 62169.0285178915}, "fueraModelo": {"comprasExtrahosp": 2214950.06258, "sociosanitarios": 379600}, "financiero": {"planificacion2026": 30166013.472194, "presupuestoComparable": 23243045, "produccionValorizada": 20618883.1602748, "pctGastoAsociado": 0.683513689313987, "difGastoCorregido": -9547130.31191927, "pctPresupuestoAsociado": 0.887099050932215, "deficitJustificado": 0}, "uph": {"uphTotal": 4930.56720095223, "uphUrgencia": 0, "gastoUnitarioObservado": 5434386.81603011, "precioBasePropuesto": 3242327.27338233, "mayorGastoPorUPH": 2192059.54264778, "varPB": 0.676075965755631, "efectoMayorGasto": 10808096.8835135}, "codSS": 31, "servicioSalud": "S.S. Concepción", "egresosCMA": {"cmaValidados": 722, "pmCMA": 0.579181301915507, "ehValidados": 4030, "pmEH": 1.1197018116549, "pctEgresos": 0.83379087329223, "pctCMA": 0.0224376078284094, "pctCajaI": 0.85622848112064, "precioBaseW": 3096349, "ajusteZona": 145978.273382327}, "capacidad": {"camas": 119, "diasCamaDispDotacion": 43435, "diasEstadaREM": 31783, "pctOcupacion": 0.7317370783930011, "diasCamaDispExtra": 3373.9269833034027, "promDiasEstada": 7.86, "egresosExtraPotenciales": 429.25279685793925, "pesoMedioObsEH": 1.11995505562423, "uphExtraPotenciales": 480.7438399818896, "ingresoExtraPotencialM": 1558728.8638838313}}, {"codDeis": 118106, "nombre": "Hospital de Lota", "componentes": {"grdGasto": 11012404.6488665, "grdAT": 0, "ambulatorioMLE": 9473653, "hospDomiciliaria": 507062, "trasplantes": null, "saludOral": 375498, "farmacia": 2188657.87012131, "egresosNoValidados": 50647.533896085}, "fueraModelo": {"comprasExtrahosp": 127741.333696, "sociosanitarios": 284700}, "financiero": {"planificacion2026": 30405523.7333884, "presupuestoComparable": 27612544, "produccionValorizada": 23557275.5189878, "pctGastoAsociado": 0.774769601916756, "difGastoCorregido": -6848248.21440059, "pctPresupuestoAsociado": 0.853136730863617, "deficitJustificado": 0}, "uph": {"uphTotal": 4530.30859988097, "uphUrgencia": 0, "gastoUnitarioObservado": 2442116.21599592, "precioBasePropuesto": 2430828.80692848, "mayorGastoPorUPH": 11287.4090674403, "varPB": 0.00464344055626968, "efectoMayorGasto": 51135.4463685993}, "codSS": 31, "servicioSalud": "S.S. Concepción", "egresosCMA": {"cmaValidados": 2206, "pmCMA": 0.443018631014055, "ehValidados": 4586, "pmEH": 0.774751308300037, "pctEgresos": 0.33206151877096, "pctCMA": 0.0314309414330234, "pctCajaI": 0.363492460203983, "precioBaseW": 2343714, "ajusteZona": 87114.8069284756}, "capacidad": {"camas": 106, "diasCamaDispDotacion": 38690, "diasEstadaREM": 24554, "pctOcupacion": 0.6346342724218145, "diasCamaDispExtra": 6762.254287648408, "promDiasEstada": 5.33, "egresosExtraPotenciales": 1268.7156262004517, "pesoMedioObsEH": 0.774931171366594, "uphExtraPotenciales": 983.1672863426178, "ingresoExtraPotencialM": 2389911.361671337}}, {"codDeis": 105102, "nombre": "Hospital Dr. Antonio Tirado Lanas (Ovalle)", "componentes": {"grdGasto": 27726197.8439611, "grdAT": 125320.8, "ambulatorioMLE": 21324728, "hospDomiciliaria": 1830902, "trasplantes": null, "saludOral": 418637, "farmacia": 7262331.85285011, "egresosNoValidados": 1204209.66468724}, "fueraModelo": {"comprasExtrahosp": 1216231.649844, "sociosanitarios": 1423500}, "financiero": {"planificacion2026": 80830179.5444259, "presupuestoComparable": 63960142, "produccionValorizada": 58688117.4968112, "pctGastoAsociado": 0.726066895157086, "difGastoCorregido": -22142062.0476148, "pctPresupuestoAsociado": 0.91757328332403, "deficitJustificado": 0}, "uph": {"uphTotal": 8545.17230008502, "uphUrgencia": 312.0482, "gastoUnitarioObservado": 4795933.88050514, "precioBasePropuesto": 3244662.23386569, "mayorGastoPorUPH": 1551271.64663945, "varPB": 0.478099578578096, "efectoMayorGasto": 13255883.5047707}, "codSS": 24, "servicioSalud": "S.S. Coquimbo", "egresosCMA": {"cmaValidados": 3446, "pmCMA": 0.510705426413774, "ehValidados": 7011, "pmEH": 0.967805077829575, "pctEgresos": 0.462533877800311, "pctCMA": 0.0452080494747231, "pctCajaI": 0.507741927275034, "precioBaseW": 3096349, "ajusteZona": 148313.23386569}, "capacidad": {"camas": 223, "diasCamaDispDotacion": 81395, "diasEstadaREM": 64148, "pctOcupacion": 0.7881073776030468, "diasCamaDispExtra": 1734.3085485433562, "promDiasEstada": 8.45, "egresosExtraPotenciales": 205.24361521223153, "pesoMedioObsEH": 0.940023827713383, "uphExtraPotenciales": 192.9338887855346, "ingresoExtraPotencialM": 626005.3025752673}}, {"codDeis": 105100, "nombre": "Hospital San Juan de Dios (La Serena)", "componentes": {"grdGasto": 57264927.1481597, "grdAT": 282676.7, "ambulatorioMLE": 31504934, "hospDomiciliaria": 2480271, "trasplantes": null, "saludOral": 627635, "farmacia": 19783084.5034569, "egresosNoValidados": 792207.434673388}, "fueraModelo": {"comprasExtrahosp": 1700255.774712, "sociosanitarios": 854100}, "financiero": {"planificacion2026": 138584345.541404, "presupuestoComparable": 122134180, "produccionValorizada": 111943528.351617, "pctGastoAsociado": 0.807764599344102, "difGastoCorregido": -26640817.1897871, "pctPresupuestoAsociado": 0.916561836757053, "deficitJustificado": 0}, "uph": {"uphTotal": 18124.092600102, "uphUrgencia": 623.0832, "gastoUnitarioObservado": 3569667.96293329, "precioBasePropuesto": 3159602.43702559, "mayorGastoPorUPH": 410065.525907694, "varPB": 0.129783899740793, "efectoMayorGasto": 7432065.56366056}, "codSS": 24, "servicioSalud": "S.S. Coquimbo", "egresosCMA": {"cmaValidados": 6330, "pmCMA": 0.510432306512015, "ehValidados": 13409, "pmEH": 1.11067612050719, "pctEgresos": 0.446619237376423, "pctCMA": 0.0419596855855256, "pctCajaI": 0.488578922961949, "precioBaseW": 3096349, "ajusteZona": 63253.4370255913}, "capacidad": {"camas": 342, "diasCamaDispDotacion": 124830, "diasEstadaREM": 103883, "pctOcupacion": 0.8321957862693263, "diasCamaDispExtra": 0, "promDiasEstada": 7.62, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.10982171139463, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 105101, "nombre": "Hospital San Pablo (Coquimbo)", "componentes": {"grdGasto": 52090126.9650377, "grdAT": 774725.5, "ambulatorioMLE": 18030954, "hospDomiciliaria": 3500407, "trasplantes": null, "saludOral": 322601, "farmacia": 10219561.5452845, "egresosNoValidados": 1310413.27728311}, "fueraModelo": {"comprasExtrahosp": -246552.2071, "sociosanitarios": 949000}, "financiero": {"planificacion2026": 126678308.08848, "presupuestoComparable": 87131355, "produccionValorizada": 84938376.0103222, "pctGastoAsociado": 0.670504503036114, "difGastoCorregido": -41739932.0781581, "pctPresupuestoAsociado": 0.974831345275443, "deficitJustificado": 0}, "uph": {"uphTotal": 16441.2010024826, "uphUrgencia": 740.0974, "gastoUnitarioObservado": 4098668.08062287, "precioBasePropuesto": 3168267.75350367, "mayorGastoPorUPH": 930400.327119194, "varPB": 0.29366215216195, "efectoMayorGasto": 15296898.7909422}, "codSS": 24, "servicioSalud": "S.S. Coquimbo", "egresosCMA": {"cmaValidados": 4189, "pmCMA": 0.540447219231394, "ehValidados": 12665, "pmEH": 1.11940525867527, "pctEgresos": 0.568069761824291, "pctCMA": 0.0349759899979879, "pctCajaI": 0.603045751822279, "precioBaseW": 3096349, "ajusteZona": 71918.7535036709}, "capacidad": {"camas": 353, "diasCamaDispDotacion": 128845, "diasEstadaREM": 110769, "pctOcupacion": 0.8597074003647794, "diasCamaDispExtra": 0, "promDiasEstada": 8.24, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.08731201250372, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 105103, "nombre": "Hospital de Illapel", "componentes": {"grdGasto": 9233823.55183489, "grdAT": 0, "ambulatorioMLE": 5753972, "hospDomiciliaria": 262356, "trasplantes": null, "saludOral": 303804, "farmacia": 1109571.66803032, "egresosNoValidados": 218075.714263379}, "fueraModelo": {"comprasExtrahosp": 268048.886996, "sociosanitarios": null}, "financiero": {"planificacion2026": 22780835.6686192, "presupuestoComparable": 16097300, "produccionValorizada": 16663527.2198652, "pctGastoAsociado": 0.731471288510254, "difGastoCorregido": -6117308.44875394, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0351752915001404}, "uph": {"uphTotal": 2888.03160023805, "uphUrgencia": 4.2894, "gastoUnitarioObservado": 3505397.1506361, "precioBasePropuesto": 3197272.33977418, "mayorGastoPorUPH": 308124.810861919, "varPB": 0.0963711495667214, "efectoMayorGasto": 889874.190586595}, "codSS": 24, "servicioSalud": "S.S. Coquimbo", "egresosCMA": {"cmaValidados": 654, "pmCMA": 0.437983638961732, "ehValidados": 3593, "pmEH": 0.724071889885077, "pctEgresos": 0.438396898664625, "pctCMA": 0.0186543891479964, "pctCajaI": 0.457051287812621, "precioBaseW": 3096349, "ajusteZona": 100923.33977418}, "capacidad": {"camas": 64, "diasCamaDispDotacion": 23360, "diasEstadaREM": 14866, "pctOcupacion": 0.6363869863013699, "diasCamaDispExtra": 4041.927117070737, "promDiasEstada": 4.01, "egresosExtraPotenciales": 1007.9618745812312, "pesoMedioObsEH": 0.719653520366873, "uphExtraPotenciales": 725.3833114379756, "ingresoExtraPotencialM": 2319247.9973944393}}, {"codDeis": 122100, "nombre": "Hospital Clínico Regional (Valdivia)", "componentes": {"grdGasto": 76460168.9611841, "grdAT": 2841667, "ambulatorioMLE": 47934472, "hospDomiciliaria": 972247, "trasplantes": 1823160.692229, "saludOral": 488477, "farmacia": 24065598.6538851, "egresosNoValidados": 423774.859194328}, "fueraModelo": {"comprasExtrahosp": 10593683.194189, "sociosanitarios": 284700}, "financiero": {"planificacion2026": 180826270.95535, "presupuestoComparable": 133881959, "produccionValorizada": 154585791.307298, "pctGastoAsociado": 0.854885689400014, "difGastoCorregido": -26240479.6480519, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.15464243623219}, "uph": {"uphTotal": 23836.5635011052, "uphUrgencia": 1099.83, "gastoUnitarioObservado": 3626209.36698288, "precioBasePropuesto": 3207684.23508863, "mayorGastoPorUPH": 418525.131894255, "varPB": 0.130475789142846, "efectoMayorGasto": 9976200.88320583}, "codSS": 37, "servicioSalud": "S.S. Los Ríos", "egresosCMA": {"cmaValidados": 4987, "pmCMA": 0.51892297967915, "ehValidados": 20045, "pmEH": 1.06004961843079, "pctEgresos": 0.495472314437179, "pctCMA": 0.0283144897918199, "pctCajaI": 0.523786804228999, "precioBaseW": 3096349, "ajusteZona": 111335.235088627}, "capacidad": {"camas": 500, "diasCamaDispDotacion": 182500, "diasEstadaREM": 145862, "pctOcupacion": 0.7992438356164383, "diasCamaDispExtra": 1856.180602115151, "promDiasEstada": 7.24, "egresosExtraPotenciales": 256.3785362037501, "pesoMedioObsEH": 1.06148391278434, "uphExtraPotenciales": 272.14169176347826, "ingresoExtraPotencialM": 872944.6143800585}}, {"codDeis": 126100, "nombre": "Hospital Dr. Lautaro Navarro Avaria (Punta Arenas)", "componentes": {"grdGasto": 49920950.6967742, "grdAT": 873997.2, "ambulatorioMLE": 34459088, "hospDomiciliaria": 1216797, "trasplantes": 469765.210845, "saludOral": 585202, "farmacia": 13180319.4202196, "egresosNoValidados": 1736244.10257696}, "fueraModelo": {"comprasExtrahosp": 7860033.6346736, "sociosanitarios": 189800}, "financiero": {"planificacion2026": 124300061.795391, "presupuestoComparable": 104490115, "produccionValorizada": 100706119.527839, "pctGastoAsociado": 0.810185595028989, "difGastoCorregido": -23593942.267552, "pctPresupuestoAsociado": 0.963786091419641, "deficitJustificado": 0}, "uph": {"uphTotal": 13080.6841257074, "uphUrgencia": 0, "gastoUnitarioObservado": 4863990.93784245, "precioBasePropuesto": 3816386.83550692, "mayorGastoPorUPH": 1047604.10233553, "varPB": 0.274501550154408, "efectoMayorGasto": 13703378.3514463}, "codSS": 41, "servicioSalud": "S.S. Magallanes", "egresosCMA": {"cmaValidados": 2743, "pmCMA": 0.549093129450008, "ehValidados": 10555, "pmEH": 1.09659134738286, "pctEgresos": 0.520155471099579, "pctCMA": 0.0237169149920064, "pctCajaI": 0.543872386091585, "precioBaseW": 3096349, "ajusteZona": 720037.835506924}, "capacidad": {"camas": 326, "diasCamaDispDotacion": 118990, "diasEstadaREM": 89014, "pctOcupacion": 0.7480796705605514, "diasCamaDispExtra": 7298.253752579066, "promDiasEstada": 8.09, "egresosExtraPotenciales": 902.1327259059414, "pesoMedioObsEH": 1.08928294989543, "uphExtraPotenciales": 982.6777968720291, "ingresoExtraPotencialM": 3750278.607527355}}, {"codDeis": 116105, "nombre": "Hospital Dr. César Garavagno Burotto (Talca)", "componentes": {"grdGasto": 117020732.368871, "grdAT": 3549879.5, "ambulatorioMLE": 48321253, "hospDomiciliaria": 4234203, "trasplantes": 152801.580666, "saludOral": 845108, "farmacia": 35884049.9213369, "egresosNoValidados": 8323498.54701903}, "fueraModelo": {"comprasExtrahosp": 11289777.199195, "sociosanitarios": null}, "financiero": {"planificacion2026": 207403004.53004, "presupuestoComparable": 189222153, "produccionValorizada": 210008027.370874, "pctGastoAsociado": 1.0125601981839, "difGastoCorregido": 2605022.8408342, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.109849053302306}, "uph": {"uphTotal": 37793.1339034686, "uphUrgencia": 1448.354, "gastoUnitarioObservado": 2780853.65220395, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 29, "servicioSalud": "S.S. Maule", "egresosCMA": {"cmaValidados": 8745, "pmCMA": 0.602428038961025, "ehValidados": 25752, "pmEH": 1.2630048424493, "pctEgresos": 0.516401492430302, "pctCMA": 0.0167723622066371, "pctCajaI": 0.533173854636939, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 655, "diasCamaDispDotacion": 239075, "diasEstadaREM": 195368, "pctOcupacion": 0.8171828923977831, "diasCamaDispExtra": 0, "promDiasEstada": 6.71, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.20971360981308, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 116108, "nombre": "Hospital Presidente Carlos Ibáñez del Campo (Linares)", "componentes": {"grdGasto": 35509940.9817351, "grdAT": 624553.2, "ambulatorioMLE": 15131835, "hospDomiciliaria": 2040584, "trasplantes": null, "saludOral": 118351, "farmacia": 5552299.84543685, "egresosNoValidados": 4216070.54059209}, "fueraModelo": {"comprasExtrahosp": 1567804.513266, "sociosanitarios": null}, "financiero": {"planificacion2026": 59882396.6077252, "presupuestoComparable": 58617612, "produccionValorizada": 58977564.027172, "pctGastoAsociado": 0.98488984022332, "difGastoCorregido": -904832.580553271, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.00614068050353112}, "uph": {"uphTotal": 11468.3264004591, "uphUrgencia": 1188.2869, "gastoUnitarioObservado": 3010879.90161513, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 29, "servicioSalud": "S.S. Maule", "egresosCMA": {"cmaValidados": 4059, "pmCMA": 0.478976028528198, "ehValidados": 9604, "pmEH": 0.991687078369755, "pctEgresos": 0.561853975879084, "pctCMA": 0.0354209087728817, "pctCajaI": 0.597274884651966, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 230, "diasCamaDispDotacion": 83950, "diasEstadaREM": 69659, "pctOcupacion": 0.8297677188802859, "diasCamaDispExtra": 0, "promDiasEstada": 6.23, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.949133079881921, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 116110, "nombre": "Hospital San José (Parral)", "componentes": {"grdGasto": 7652793.15298191, "grdAT": 1481.8, "ambulatorioMLE": 3627325, "hospDomiciliaria": 276790, "trasplantes": null, "saludOral": 173543, "farmacia": 478664.388701084, "egresosNoValidados": 566717.78089089}, "fueraModelo": {"comprasExtrahosp": 311858.900162, "sociosanitarios": null}, "financiero": {"planificacion2026": 21687097.032393, "presupuestoComparable": 19245790, "produccionValorizada": 12210597.341683, "pctGastoAsociado": 0.563035122840305, "difGastoCorregido": -9476499.69070999, "pctPresupuestoAsociado": 0.634455501264588, "deficitJustificado": 0}, "uph": {"uphTotal": 3265.24189938786, "uphUrgencia": 0, "gastoUnitarioObservado": 2386425.1348245, "precioBasePropuesto": 2343714, "mayorGastoPorUPH": 42711.1348245023, "varPB": 0.0182236974411137, "efectoMayorGasto": 139462.186999369}, "codSS": 29, "servicioSalud": "S.S. Maule", "egresosCMA": {"cmaValidados": 575, "pmCMA": 0.601269217923601, "ehValidados": 3879, "pmEH": 0.752645552740858, "pctEgresos": 0.549880863916835, "pctCMA": 0.0205347648991235, "pctCajaI": 0.570415628815959, "precioBaseW": 2343714, "ajusteZona": 0}, "capacidad": {"camas": 102, "diasCamaDispDotacion": 37230, "diasEstadaREM": 21229, "pctOcupacion": 0.5702121944668278, "diasCamaDispExtra": 8905.50884283149, "promDiasEstada": 5.08, "egresosExtraPotenciales": 1753.0529218172226, "pesoMedioObsEH": 0.756500215311005, "uphExtraPotenciales": 1326.1849128063152, "ingresoExtraPotencialM": 3108198.1467329403}}, {"codDeis": 116111, "nombre": "Hospital San Juan de Dios (Cauquenes)", "componentes": {"grdGasto": 8504192.56157656, "grdAT": 0, "ambulatorioMLE": 5904625, "hospDomiciliaria": 492208, "trasplantes": null, "saludOral": 130721, "farmacia": 913462.026049641, "egresosNoValidados": 373275.916264409}, "fueraModelo": {"comprasExtrahosp": 775887.124921, "sociosanitarios": 189800}, "financiero": {"planificacion2026": 18840970.2123635, "presupuestoComparable": 17526664, "produccionValorizada": 15945208.5876262, "pctGastoAsociado": 0.846305068576717, "difGastoCorregido": -2895761.62473734, "pctPresupuestoAsociado": 0.909768601008509, "deficitJustificado": 0}, "uph": {"uphTotal": 3555.03199852066, "uphUrgencia": 0, "gastoUnitarioObservado": 2354071.0905715, "precioBasePropuesto": 2392156.40396918, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 29, "servicioSalud": "S.S. Maule", "egresosCMA": {"cmaValidados": 461, "pmCMA": 0.443297173957386, "ehValidados": 4540, "pmEH": 0.738033480468349, "pctEgresos": 0.467494653070388, "pctCMA": 0.0123246021643671, "pctCajaI": 0.479819255234755, "precioBaseW": 2343714, "ajusteZona": 48442.403969182}, "capacidad": {"camas": 120, "diasCamaDispDotacion": 43800, "diasEstadaREM": 25586, "pctOcupacion": 0.5841552511415525, "diasCamaDispExtra": 9866.363344507632, "promDiasEstada": 5.32, "egresosExtraPotenciales": 1854.5795760352692, "pesoMedioObsEH": 0.736689320184641, "uphExtraPotenciales": 1366.248967097742, "ingresoExtraPotencialM": 3268281.216059141}}, {"codDeis": 116100, "nombre": "Hospital San Juan de Dios (Curicó)", "componentes": {"grdGasto": 64661635.4970041, "grdAT": 1633444.7, "ambulatorioMLE": 36536657, "hospDomiciliaria": 1998225, "trasplantes": null, "saludOral": 863285, "farmacia": 11843357.1532145, "egresosNoValidados": 6219337.43551518}, "fueraModelo": {"comprasExtrahosp": 5809324.115181, "sociosanitarios": null}, "financiero": {"planificacion2026": 113502707.266036, "presupuestoComparable": 122109204, "produccionValorizada": 117536604.350219, "pctGastoAsociado": 1.03554009575056, "difGastoCorregido": 4033897.08418272, "pctPresupuestoAsociado": 0.962553194190166, "deficitJustificado": 0}, "uph": {"uphTotal": 20883.1871010032, "uphUrgencia": 535.9917, "gastoUnitarioObservado": 3456078.38804461, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 359729.388044606, "varPB": 0.116178566448616, "efectoMayorGasto": 7512296.11626487}, "codSS": 29, "servicioSalud": "S.S. Maule", "egresosCMA": {"cmaValidados": 7289, "pmCMA": 0.541458114963094, "ehValidados": 15473, "pmEH": 1.09458404323901, "pctEgresos": 0.554491386357137, "pctCMA": 0.0670326221655116, "pctCajaI": 0.621524008522649, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 400, "diasCamaDispDotacion": 146000, "diasEstadaREM": 125267, "pctOcupacion": 0.8579931506849315, "diasCamaDispExtra": 0, "promDiasEstada": 7.37, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.08076062816139, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 116107, "nombre": "Hospital de Constitución", "componentes": {"grdGasto": 5657400.04668982, "grdAT": 0, "ambulatorioMLE": 3083562, "hospDomiciliaria": 266354, "trasplantes": null, "saludOral": 15841, "farmacia": 745850.931086466, "egresosNoValidados": 164777.612948017}, "fueraModelo": {"comprasExtrahosp": 23792.479708, "sociosanitarios": null}, "financiero": {"planificacion2026": 14888704.7303149, "presupuestoComparable": 11431482, "produccionValorizada": 9769007.97777628, "pctGastoAsociado": 0.656135517140425, "difGastoCorregido": -5119696.75253865, "pctPresupuestoAsociado": 0.854570560297981, "deficitJustificado": 0}, "uph": {"uphTotal": 2412.06219996599, "uphUrgencia": 0, "gastoUnitarioObservado": 1890358.40124076, "precioBasePropuesto": 2345461.9233159, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 29, "servicioSalud": "S.S. Maule", "egresosCMA": {"cmaValidados": 425, "pmCMA": 0.669484705882353, "ehValidados": 2971, "pmEH": 0.716099360473238, "pctEgresos": 0.30126116380422, "pctCMA": 0.0281464111937871, "pctCajaI": 0.329407574998007, "precioBaseW": 2343714, "ajusteZona": 1747.92331590072}, "capacidad": {"camas": 75, "diasCamaDispDotacion": 27375, "diasEstadaREM": 15005, "pctOcupacion": 0.5481278538812785, "diasCamaDispExtra": 7152.727090317272, "promDiasEstada": 4.9, "egresosExtraPotenciales": 1459.740222513729, "pesoMedioObsEH": 0.717148366013072, "uphExtraPotenciales": 1046.8503153792788, "ingresoExtraPotencialM": 2455347.5541333393}}, {"codDeis": 116109, "nombre": "Hospital de San Javier", "componentes": {"grdGasto": 6026793.75527056, "grdAT": 41911.8, "ambulatorioMLE": 3684225, "hospDomiciliaria": 577958, "trasplantes": null, "saludOral": 22032, "farmacia": 946345.117476622, "egresosNoValidados": 265895.525037446}, "fueraModelo": {"comprasExtrahosp": 177471.937122, "sociosanitarios": null}, "financiero": {"planificacion2026": 12505850.2997036, "presupuestoComparable": 10118477, "produccionValorizada": 11299265.6727472, "pctGastoAsociado": 0.903518385552318, "difGastoCorregido": -1206584.62695643, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.116696284702449}, "uph": {"uphTotal": 2571.47150005101, "uphUrgencia": 0, "gastoUnitarioObservado": 1993590.54942281, "precioBasePropuesto": 2343714, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 29, "servicioSalud": "S.S. Maule", "egresosCMA": {"cmaValidados": 612, "pmCMA": 0.627993300792516, "ehValidados": 2783, "pmEH": 0.785892777565933, "pctEgresos": 0.37358929975256, "pctCMA": 0.0252552275106162, "pctCajaI": 0.398844527263176, "precioBaseW": 2343714, "ajusteZona": 0}, "capacidad": {"camas": 66, "diasCamaDispDotacion": 24090, "diasEstadaREM": 16651, "pctOcupacion": 0.6911996679119967, "diasCamaDispExtra": 2847.7998394791975, "promDiasEstada": 5.67, "egresosExtraPotenciales": 502.2574672802818, "pesoMedioObsEH": 0.783976626916525, "uphExtraPotenciales": 393.7581150420323, "ingresoExtraPotencialM": 922856.4068376216}}, {"codDeis": 111101, "nombre": "Hospital Clínico Metropolitano El Carmen Doctor Luis Valentín Ferrada", "componentes": {"grdGasto": 62071142.26046, "grdAT": 1423322.8, "ambulatorioMLE": 32639023, "hospDomiciliaria": 8588099, "trasplantes": null, "saludOral": 852704, "farmacia": 7115381.90394332, "egresosNoValidados": 28438.1411167788}, "fueraModelo": {"comprasExtrahosp": 6319490.398313, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 158962837.662497, "presupuestoComparable": 128224646, "produccionValorizada": 112689672.964403, "pctGastoAsociado": 0.708905770817085, "difGastoCorregido": -46273164.6980932, "pctPresupuestoAsociado": 0.878845654714487, "deficitJustificado": 0}, "uph": {"uphTotal": 20046.5587892256, "uphUrgencia": 2215.4305, "gastoUnitarioObservado": 4728113.80194632, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 1631764.80194632, "varPB": 0.526996408333274, "efectoMayorGasto": 32711269.0324061}, "codSS": 43, "servicioSalud": "S.S. Met. Central", "egresosCMA": {"cmaValidados": 3145, "pmCMA": 0.60205985728858, "ehValidados": 16473, "pmEH": 1.10198995556687, "pctEgresos": 0.541738802219525, "pctCMA": 0.0297564451352564, "pctCajaI": 0.571495247354781, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 451, "diasCamaDispDotacion": 164615, "diasEstadaREM": 133681, "pctOcupacion": 0.8120827385110713, "diasCamaDispExtra": 0, "promDiasEstada": 8.13, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.10257668573515, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 111100, "nombre": "Hospital Clínico San Borja-Arriarán (Santiago, Santiago)", "componentes": {"grdGasto": 59112345.7648367, "grdAT": 2923687.4, "ambulatorioMLE": 33064696, "hospDomiciliaria": 7822341, "trasplantes": 260103.735658, "saludOral": 810254, "farmacia": 22173358.4921994, "egresosNoValidados": 345354.738294321}, "fueraModelo": {"comprasExtrahosp": 9985879.0583982, "sociosanitarios": null}, "financiero": {"planificacion2026": 192694174.436951, "presupuestoComparable": 156551032, "produccionValorizada": 126166786.392694, "pctGastoAsociado": 0.654751430661312, "difGastoCorregido": -66527388.0442568, "pctPresupuestoAsociado": 0.80591475368041, "deficitJustificado": 0}, "uph": {"uphTotal": 19090.9828849515, "uphUrgencia": 350.8524, "gastoUnitarioObservado": 4592256.06436461, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 1495907.06436461, "varPB": 0.483119656203034, "efectoMayorGasto": 28558336.1632628}, "codSS": 43, "servicioSalud": "S.S. Met. Central", "egresosCMA": {"cmaValidados": 2020, "pmCMA": 0.485139456876567, "ehValidados": 18307, "pmEH": 0.989293777356247, "pctEgresos": 0.489413160226705, "pctCMA": 0.00358183869615181, "pctCajaI": 0.492994998922857, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 430, "diasCamaDispDotacion": 156950, "diasEstadaREM": 109967, "pctOcupacion": 0.7006498884995221, "diasCamaDispExtra": 17070.635317819022, "promDiasEstada": 5.96, "egresosExtraPotenciales": 2864.200556681044, "pesoMedioObsEH": 0.984374752126564, "uphExtraPotenciales": 2819.4467130236694, "ingresoExtraPotencialM": 8729991.010424126}}, {"codDeis": 111195, "nombre": "Hospital de Urgencia Asistencia Pública Dr. Alejandro del Río (Santiago, Santiago)", "componentes": {"grdGasto": 65073432.9267992, "grdAT": 582181.7, "ambulatorioMLE": 15953266, "hospDomiciliaria": 8756145, "trasplantes": null, "saludOral": null, "farmacia": 5217281.85649292, "egresosNoValidados": 963777.994326133}, "fueraModelo": {"comprasExtrahosp": 4989354.867508, "sociosanitarios": null}, "financiero": {"planificacion2026": 141113112.959602, "presupuestoComparable": 107123839, "produccionValorizada": 95582307.4832922, "pctGastoAsociado": 0.677345325878081, "difGastoCorregido": -45530805.4763099, "pctPresupuestoAsociado": 0.892259915025004, "deficitJustificado": 0}, "uph": {"uphTotal": 18186.3294552967, "uphUrgencia": 2606.5206, "gastoUnitarioObservado": 5291713.73098939, "precioBasePropuesto": 3578151, "mayorGastoPorUPH": 1713562.73098939, "varPB": 0.478896148035504, "efectoMayorGasto": 31163416.3680909}, "codSS": 43, "servicioSalud": "S.S. Met. Central", "egresosCMA": {"cmaValidados": 0, "pmCMA": 0, "ehValidados": 12678, "pmEH": 1.4344793701922, "pctEgresos": 0.713116245270564, "pctCMA": 0, "pctCajaI": 0.713116245270564, "precioBaseW": 3578151, "ajusteZona": 0}, "capacidad": {"camas": 298, "diasCamaDispDotacion": 108770, "diasEstadaREM": 101339, "pctOcupacion": 0.9316815298335939, "diasCamaDispExtra": 0, "promDiasEstada": 7.88, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.43601620759415, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 109100, "nombre": "Complejo Hospitalario San José (Santiago, Independencia)", "componentes": {"grdGasto": 73968089.2435462, "grdAT": 2791449.3, "ambulatorioMLE": 39519752, "hospDomiciliaria": 3193725, "trasplantes": null, "saludOral": 1682646, "farmacia": 21313475.7396781, "egresosNoValidados": 465535.448405126}, "fueraModelo": {"comprasExtrahosp": 4826591.260899, "sociosanitarios": 2752100}, "financiero": {"planificacion2026": 177692704.631302, "presupuestoComparable": 141641192, "produccionValorizada": 142469137.283224, "pctGastoAsociado": 0.80177257461884, "difGastoCorregido": -35223567.3480779, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0058453707677375}, "uph": {"uphTotal": 23888.8088014452, "uphUrgencia": 3781.8686, "gastoUnitarioObservado": 4290486.50624481, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 1194137.50624481, "varPB": 0.385659854959764, "efectoMayorGasto": 28526522.5693169}, "codSS": 45, "servicioSalud": "S.S. Met. Norte", "egresosCMA": {"cmaValidados": 6265, "pmCMA": 0.540864692751001, "ehValidados": 18818, "pmEH": 1.08939799667128, "pctEgresos": 0.599154683155856, "pctCMA": 0.030650018982255, "pctCajaI": 0.629804702138111, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 566, "diasCamaDispDotacion": 206590, "diasEstadaREM": 183290, "pctOcupacion": 0.8872162253739291, "diasCamaDispExtra": 0, "promDiasEstada": 9.6, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.0810093993821, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 109101, "nombre": "Hospital Clínico de Niños Dr. Roberto del Río (Santiago, Independencia)", "componentes": {"grdGasto": 30045164.2833082, "grdAT": 593601.2, "ambulatorioMLE": 11123059, "hospDomiciliaria": 494990, "trasplantes": null, "saludOral": null, "farmacia": 5873446.20965982, "egresosNoValidados": 126123.586502102}, "fueraModelo": {"comprasExtrahosp": 1778106.61534249, "sociosanitarios": null}, "financiero": {"planificacion2026": 74174187.6603695, "presupuestoComparable": 65149636, "produccionValorizada": 48130260.692968, "pctGastoAsociado": 0.648881534279121, "difGastoCorregido": -26043926.9674015, "pctPresupuestoAsociado": 0.738764844257427, "deficitJustificado": 0}, "uph": {"uphTotal": 9703.41659913279, "uphUrgencia": 116.5403, "gastoUnitarioObservado": 4291130.69545465, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 1194781.69545465, "varPB": 0.38586790295753, "efectoMayorGasto": 11593464.5360146}, "codSS": 45, "servicioSalud": "S.S. Met. Norte", "egresosCMA": {"cmaValidados": 1439, "pmCMA": 0.447763516224437, "ehValidados": 7927, "pmEH": 1.14281378822831, "pctEgresos": 0.541837750172833, "pctCMA": 0.0318313481729978, "pctCajaI": 0.573669098345831, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 161, "diasCamaDispDotacion": 58765, "diasEstadaREM": 36614, "pctOcupacion": 0.6230579426529397, "diasCamaDispExtra": 10951.254153881075, "promDiasEstada": 4.59, "egresosExtraPotenciales": 2385.8941511723474, "pesoMedioObsEH": 1.14047448595787, "uphExtraPotenciales": 2721.051405608171, "ingresoExtraPotencialM": 8425324.798703454}}, {"codDeis": 110130, "nombre": "Hospital Adalberto Steeger (Talagante)", "componentes": {"grdGasto": 17551311.8503006, "grdAT": 0, "ambulatorioMLE": 7175057, "hospDomiciliaria": 2871094, "trasplantes": null, "saludOral": null, "farmacia": 1419354.91027525, "egresosNoValidados": 85660.1854501105}, "fueraModelo": {"comprasExtrahosp": 3510644.55649085, "sociosanitarios": 379600}, "financiero": {"planificacion2026": 42863001.5814353, "presupuestoComparable": 29109984, "produccionValorizada": 29016817.7605759, "pctGastoAsociado": 0.676966537339829, "difGastoCorregido": -13846183.8208595, "pctPresupuestoAsociado": 0.99679950908169, "deficitJustificado": 0}, "uph": {"uphTotal": 5668.3894, "uphUrgencia": 230.1431, "gastoUnitarioObservado": 3355837.58699087, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 259488.586990868, "varPB": 0.0838046961085032, "efectoMayorGasto": 1470882.35592001}, "codSS": 46, "servicioSalud": "S.S. Met. Occidente", "egresosCMA": {"cmaValidados": 5, "pmCMA": 0, "ehValidados": 6141, "pmEH": 0.923040123758345, "pctEgresos": 0.515678031468175, "pctCMA": 0, "pctCajaI": 0.515678031468175, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 114, "diasCamaDispDotacion": 41610, "diasEstadaREM": 35222, "pctOcupacion": 0.84647921172795, "diasCamaDispExtra": 0, "promDiasEstada": 5.69, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.920390638641876, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 110120, "nombre": "Hospital Dr. Félix Bulnes Cerda (Santiago, Quinta Normal)", "componentes": {"grdGasto": 74699545.8836231, "grdAT": 1103605.9, "ambulatorioMLE": 36294349, "hospDomiciliaria": 5700648, "trasplantes": null, "saludOral": 208106, "farmacia": 10558021.6547625, "egresosNoValidados": 532699.979630127}, "fueraModelo": {"comprasExtrahosp": 13898017.0154694, "sociosanitarios": 1043900}, "financiero": {"planificacion2026": 182452242.460036, "presupuestoComparable": 164733857, "produccionValorizada": 128564276.438386, "pctGastoAsociado": 0.704646184146221, "difGastoCorregido": -53887966.0216505, "pctPresupuestoAsociado": 0.780436267199071, "deficitJustificado": 0}, "uph": {"uphTotal": 24125.0407766124, "uphUrgencia": 3518.4902, "gastoUnitarioObservado": 4686822.13420515, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 1590473.13420515, "varPB": 0.513660809619699, "efectoMayorGasto": 38370229.2168057}, "codSS": 46, "servicioSalud": "S.S. Met. Occidente", "egresosCMA": {"cmaValidados": 4882, "pmCMA": 0.528302191703805, "ehValidados": 20526, "pmEH": 1.04968671327655, "pctEgresos": 0.571906496001595, "pctCMA": 0.0384745020076339, "pctCajaI": 0.610380998009229, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 523, "diasCamaDispDotacion": 190895, "diasEstadaREM": 173935, "pctOcupacion": 0.9111553471803872, "diasCamaDispExtra": 0, "promDiasEstada": 8.41, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.05021150403948, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 110150, "nombre": "Hospital San José (Melipilla)", "componentes": {"grdGasto": 22891505.6998542, "grdAT": 511688.8, "ambulatorioMLE": 9485889, "hospDomiciliaria": 2701308, "trasplantes": null, "saludOral": 442693, "farmacia": 3170753.02795321, "egresosNoValidados": 1091972.37612251}, "fueraModelo": {"comprasExtrahosp": 2100470.524194, "sociosanitarios": 569400}, "financiero": {"planificacion2026": 59317931.6215788, "presupuestoComparable": 54364940, "produccionValorizada": 39203837.5278074, "pctGastoAsociado": 0.660910393469379, "difGastoCorregido": -20114094.0937714, "pctPresupuestoAsociado": 0.721123531596051, "deficitJustificado": 0}, "uph": {"uphTotal": 7393.06379863968, "uphUrgencia": 224.3249, "gastoUnitarioObservado": 3241346.7675133, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 144997.767513303, "varPB": 0.0468286254273348, "efectoMayorGasto": 1071977.74588617}, "codSS": 46, "servicioSalud": "S.S. Met. Occidente", "egresosCMA": {"cmaValidados": 2726, "pmCMA": 0.524647652387416, "ehValidados": 6866, "pmEH": 0.868464069069559, "pctEgresos": 0.446957666949176, "pctCMA": 0.0372505693326599, "pctCajaI": 0.484208236281836, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 137, "diasCamaDispDotacion": 50005, "diasEstadaREM": 41056, "pctOcupacion": 0.8210378962103789, "diasCamaDispExtra": 0, "promDiasEstada": 5.45, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.838690890983933, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 110100, "nombre": "Hospital San Juan de Dios (Santiago, Santiago)", "componentes": {"grdGasto": 97477424.3212664, "grdAT": 2837798.1, "ambulatorioMLE": 69755340, "hospDomiciliaria": 7148609, "trasplantes": null, "saludOral": 13267, "farmacia": 35833741.2160168, "egresosNoValidados": 546482.995468343}, "fueraModelo": {"comprasExtrahosp": 10676934.0695395, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 213085796.004064, "presupuestoComparable": 171294110, "produccionValorizada": 213066179.637283, "pctGastoAsociado": 0.999907941462318, "difGastoCorregido": -19616.3667810261, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.243861681159283}, "uph": {"uphTotal": 31481.4073998979, "uphUrgencia": 3090.0983, "gastoUnitarioObservado": 3503001.75384247, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 406652.753842468, "varPB": 0.131332984053951, "efectoMayorGasto": 12802001.0140051}, "codSS": 46, "servicioSalud": "S.S. Met. Occidente", "egresosCMA": {"cmaValidados": 6674, "pmCMA": 0.668610308698691, "ehValidados": 20886, "pmEH": 1.29364656706132, "pctEgresos": 0.509474983344153, "pctCMA": 0.0208862557654499, "pctCajaI": 0.530361239109603, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 547, "diasCamaDispDotacion": 199655, "diasEstadaREM": 161071, "pctOcupacion": 0.8067466379504645, "diasCamaDispExtra": 532.6895787139691, "promDiasEstada": 7.67, "egresosExtraPotenciales": 69.4510532873493, "pesoMedioObsEH": 1.29282884285714, "uphExtraPotenciales": 89.78832485669335, "ingresoExtraPotencialM": 278015.9898816976}}, {"codDeis": 110140, "nombre": "Hospital de Peñaflor", "componentes": {"grdGasto": 3811191.6154476, "grdAT": 0, "ambulatorioMLE": 5442483, "hospDomiciliaria": 2848094, "trasplantes": null, "saludOral": 291752, "farmacia": 989204.437984282, "egresosNoValidados": 0}, "fueraModelo": {"comprasExtrahosp": 1269622.007479, "sociosanitarios": null}, "financiero": {"planificacion2026": 22350690.371705, "presupuestoComparable": 14205165, "produccionValorizada": 13382725.0534319, "pctGastoAsociado": 0.598761149247266, "difGastoCorregido": -8967965.31827311, "pctPresupuestoAsociado": 0.94210275300793, "deficitJustificado": 0}, "uph": {"uphTotal": 1626.1334, "uphUrgencia": 516.9224, "gastoUnitarioObservado": 2862288.81542787, "precioBasePropuesto": 2343714, "mayorGastoPorUPH": 518574.815427872, "varPB": 0.221261986500005, "efectoMayorGasto": 843271.827766099}, "codSS": 46, "servicioSalud": "S.S. Met. Occidente", "egresosCMA": {"cmaValidados": 0, "pmCMA": 0, "ehValidados": 2270, "pmEH": 0.71635832599119, "pctEgresos": 0.237997368396634, "pctCMA": 0.00778938182781832, "pctCajaI": 0.245786750224452, "precioBaseW": 2343714, "ajusteZona": 0}, "capacidad": {"camas": 40, "diasCamaDispDotacion": 14600, "diasEstadaREM": 12036, "pctOcupacion": 0.8243835616438356, "diasCamaDispExtra": 0, "promDiasEstada": 5.3, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 110110, "nombre": "Instituto Traumatológico Dr. Teodoro Gebauer", "componentes": {"grdGasto": 14952395.6529869, "grdAT": 2026551.2, "ambulatorioMLE": 5840053, "hospDomiciliaria": 0, "trasplantes": null, "saludOral": null, "farmacia": 853641.491182542, "egresosNoValidados": 607540.519405358}, "fueraModelo": {"comprasExtrahosp": 1182878.261532, "sociosanitarios": null}, "financiero": {"planificacion2026": 28679681.5408068, "presupuestoComparable": 25809749, "produccionValorizada": 23672641.3441695, "pctGastoAsociado": 0.825415069915852, "difGastoCorregido": -5007040.19663739, "pctPresupuestoAsociado": 0.917197658302274, "deficitJustificado": 0}, "uph": {"uphTotal": 4829.04080030607, "uphUrgencia": 0, "gastoUnitarioObservado": 3585198.06096598, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 488849.060965978, "varPB": 0.157879186411473, "efectoMayorGasto": 2360672.06059602}, "codSS": 46, "servicioSalud": "S.S. Met. Occidente", "egresosCMA": {"cmaValidados": 1184, "pmCMA": 0.645007263513514, "ehValidados": 3092, "pmEH": 1.3147969599955, "pctEgresos": 0.592920011561882, "pctCMA": 0.106533254071142, "pctCajaI": 0.699453265633024, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 85, "diasCamaDispDotacion": 31025, "diasEstadaREM": 15078, "pctOcupacion": 0.4859951651893634, "diasCamaDispExtra": 10034.090702359574, "promDiasEstada": 4.6, "egresosExtraPotenciales": 2181.324065730342, "pesoMedioObsEH": 1.30102595419847, "uphExtraPotenciales": 2837.9592240329043, "ingresoExtraPotencialM": 8787312.205375059}}, {"codDeis": 112100, "nombre": "Hospital Del Salvador (Santiago, Providencia)", "componentes": {"grdGasto": 61547887.495915, "grdAT": 4424555.8, "ambulatorioMLE": 41012585, "hospDomiciliaria": 4417966, "trasplantes": 2318915.852445, "saludOral": 522049, "farmacia": 43745338.9176365, "egresosNoValidados": -476793.474527118}, "fueraModelo": {"comprasExtrahosp": 8375347.914218, "sociosanitarios": 759200}, "financiero": {"planificacion2026": 203281149.481696, "presupuestoComparable": 141476533, "produccionValorizada": 157989298.065997, "pctGastoAsociado": 0.77719600892075, "difGastoCorregido": -45291851.4156994, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.116717343264247}, "uph": {"uphTotal": 19877.5679020404, "uphUrgencia": 4448.6145, "gastoUnitarioObservado": 4330433.72663047, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 1234084.72663047, "varPB": 0.398561249597663, "efectoMayorGasto": 24530602.9504682}, "codSS": 42, "servicioSalud": "S.S. Met. Oriente", "egresosCMA": {"cmaValidados": 8046, "pmCMA": 0.550213335719713, "ehValidados": 11671, "pmEH": 1.32384126491643, "pctEgresos": 0.427458667749355, "pctCMA": 0.0429044642955463, "pctCajaI": 0.470363132044901, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 347, "diasCamaDispDotacion": 126655, "diasEstadaREM": 112905, "pctOcupacion": 0.8914373692313766, "diasCamaDispExtra": 0, "promDiasEstada": 9.76, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.32213082843307, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 112101, "nombre": "Hospital Dr. Luis Tisné B. (Santiago, Peñalolén)", "componentes": {"grdGasto": 47316655.3642302, "grdAT": 496068.7, "ambulatorioMLE": 2814525, "hospDomiciliaria": 1528282, "trasplantes": null, "saludOral": null, "farmacia": 2261820.10698359, "egresosNoValidados": 453708.016284979}, "fueraModelo": {"comprasExtrahosp": 1637598.54137696, "sociosanitarios": 1138800}, "financiero": {"planificacion2026": 73091460.9146531, "presupuestoComparable": 67944428, "produccionValorizada": 54417351.1712138, "pctGastoAsociado": 0.744510377686327, "difGastoCorregido": -18674109.7434393, "pctPresupuestoAsociado": 0.80090969595349, "deficitJustificado": 0}, "uph": {"uphTotal": 15281.4348008672, "uphUrgencia": 86.4289999999999, "gastoUnitarioObservado": 3791102.6282978, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 694753.6282978, "varPB": 0.224378333417131, "efectoMayorGasto": 10616832.2734987}, "codSS": 42, "servicioSalud": "S.S. Met. Oriente", "egresosCMA": {"cmaValidados": 2922, "pmCMA": 0.648618857046223, "ehValidados": 15575, "pmEH": 0.859465200679171, "pctEgresos": 0.762483241066823, "pctCMA": 0.052047448071014, "pctCajaI": 0.814530689137837, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 280, "diasCamaDispDotacion": 102200, "diasEstadaREM": 86982, "pctOcupacion": 0.8510958904109589, "diasCamaDispExtra": 0, "promDiasEstada": 5.53, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.859884857342568, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 112102, "nombre": "Hospital de Niños Dr. Luis Calvo Mackenna (Santiago, Providencia)", "componentes": {"grdGasto": 33860165.8786793, "grdAT": 2892423.6, "ambulatorioMLE": 9828726, "hospDomiciliaria": 0, "trasplantes": 600521.832492, "saludOral": 96162, "farmacia": 4649858.84597104, "egresosNoValidados": 111961.183135414}, "fueraModelo": {"comprasExtrahosp": 23209664.142995, "sociosanitarios": null}, "financiero": {"planificacion2026": 87534132.5508164, "presupuestoComparable": 69209298, "produccionValorizada": 51927858.1571423, "pctGastoAsociado": 0.593229825256982, "difGastoCorregido": -35606274.3936741, "pctPresupuestoAsociado": 0.750301760857946, "deficitJustificado": 0}, "uph": {"uphTotal": 9463.03436570432, "uphUrgencia": 26.3414, "gastoUnitarioObservado": 6742973.49925109, "precioBasePropuesto": 3578151, "mayorGastoPorUPH": 3164822.49925109, "varPB": 0.884485450516508, "efectoMayorGasto": 29948824.0717673}, "codSS": 42, "servicioSalud": "S.S. Met. Oriente", "egresosCMA": {"cmaValidados": 896, "pmCMA": 0.409293080357143, "ehValidados": 6346, "pmEH": 1.43339233622823, "pctEgresos": 0.687086244006944, "pctCMA": 0.00377121995399514, "pctCajaI": 0.69085746396094, "precioBaseW": 3578151, "ajusteZona": 0}, "capacidad": {"camas": 165, "diasCamaDispDotacion": 60225, "diasEstadaREM": 44265, "pctOcupacion": 0.7349937733499378, "diasCamaDispExtra": 4481.999598697995, "promDiasEstada": 6.94, "egresosExtraPotenciales": 645.8212678239186, "pesoMedioObsEH": 1.43133103340129, "uphExtraPotenciales": 924.3840226669407, "ingresoExtraPotencialM": 3307585.6150897364}}, {"codDeis": 112103, "nombre": "Instituto Nacional de Enfermedades Respiratorias y Cirugía Torácica", "componentes": {"grdGasto": 35604501.3766311, "grdAT": 6816728.5, "ambulatorioMLE": 5615229, "hospDomiciliaria": 0, "trasplantes": 2548584.499858, "saludOral": null, "farmacia": 12927930.2233025, "egresosNoValidados": 25887.9205896337}, "fueraModelo": {"comprasExtrahosp": 4275882.29128426, "sociosanitarios": null}, "financiero": {"planificacion2026": 58800203.1747208, "presupuestoComparable": 60258455, "produccionValorizada": 63512973.5997917, "pctGastoAsociado": 1.08014887994634, "difGastoCorregido": 4712770.42507082, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0540093269864228}, "uph": {"uphTotal": 9950.53070052972, "uphUrgencia": 0, "gastoUnitarioObservado": 3736272.37993836, "precioBasePropuesto": 3578151, "mayorGastoPorUPH": 158121.379938364, "varPB": 0.04419080691071, "efectoMayorGasto": 1573391.64548682}, "codSS": 42, "servicioSalud": "S.S. Met. Oriente", "egresosCMA": {"cmaValidados": 0, "pmCMA": 0, "ehValidados": 4427, "pmEH": 2.24769159713795, "pctEgresos": 0.691125511682647, "pctCMA": 0, "pctCajaI": 0.691125511682647, "precioBaseW": 3578151, "ajusteZona": 0}, "capacidad": {"camas": 141, "diasCamaDispDotacion": 51465, "diasEstadaREM": 38101, "pctOcupacion": 0.7403283785096668, "diasCamaDispExtra": 3555.526929796467, "promDiasEstada": 8.61, "egresosExtraPotenciales": 412.9531858067906, "pesoMedioObsEH": 2.25034253107345, "uphExtraPotenciales": 929.2861173632979, "ingresoExtraPotencialM": 3325126.0501296013}}, {"codDeis": 112104, "nombre": "Instituto de Neurocirugía Dr. Alfonso Asenjo", "componentes": {"grdGasto": 24132656.7669406, "grdAT": 2520797.8, "ambulatorioMLE": 5242814, "hospDomiciliaria": 0, "trasplantes": null, "saludOral": null, "farmacia": 803032.90128032, "egresosNoValidados": 51257.5377485293}, "fueraModelo": {"comprasExtrahosp": 1528676.624946, "sociosanitarios": 284700}, "financiero": {"planificacion2026": 37826560.4575183, "presupuestoComparable": 36042830, "produccionValorizada": 32699301.4682209, "pctGastoAsociado": 0.864453470596259, "difGastoCorregido": -5127258.98929738, "pctPresupuestoAsociado": 0.907234572541084, "deficitJustificado": 0}, "uph": {"uphTotal": 6744.44895336743, "uphUrgencia": 0, "gastoUnitarioObservado": 4591246.21299871, "precioBasePropuesto": 3578151, "mayorGastoPorUPH": 1013095.21299871, "varPB": 0.283133722696081, "efectoMayorGasto": 6832768.94897067}, "codSS": 42, "servicioSalud": "S.S. Met. Oriente", "egresosCMA": {"cmaValidados": 0, "pmCMA": 0, "ehValidados": 3527, "pmEH": 1.91223389661679, "pctEgresos": 0.863367284625212, "pctCMA": 0, "pctCajaI": 0.863367284625212, "precioBaseW": 3578151, "ajusteZona": 0}, "capacidad": {"camas": 93, "diasCamaDispDotacion": 33945, "diasEstadaREM": 23568, "pctOcupacion": 0.6942996022978347, "diasCamaDispExtra": 3907.5815919934166, "promDiasEstada": 6.67, "egresosExtraPotenciales": 585.8443166406921, "pesoMedioObsEH": 1.91304106991226, "uphExtraPotenciales": 1120.7442383083264, "ingresoExtraPotencialM": 4010192.117047176}}, {"codDeis": 113100, "nombre": "Hospital Barros Luco Trudeau (Santiago, San Miguel)", "componentes": {"grdGasto": 94580133.7139918, "grdAT": 2564035.5, "ambulatorioMLE": 49896532, "hospDomiciliaria": 5845514, "trasplantes": 403974.202298, "saludOral": 1250740, "farmacia": 30483461.3477067, "egresosNoValidados": 1515436.1844906}, "fueraModelo": {"comprasExtrahosp": 8076925.7381147, "sociosanitarios": 379600}, "financiero": {"planificacion2026": 204522203.044522, "presupuestoComparable": 188515861, "produccionValorizada": 185024390.763997, "pctGastoAsociado": 0.904666525246252, "difGastoCorregido": -19497812.2805259, "pctPresupuestoAsociado": 0.981479169882668, "deficitJustificado": 0}, "uph": {"uphTotal": 30545.6954994388, "uphUrgencia": 3050.5186, "gastoUnitarioObservado": 3681528.52480403, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 585179.524804031, "varPB": 0.188990170295413, "efectoMayorGasto": 17874715.5771702}, "codSS": 44, "servicioSalud": "S.S. Met. Sur", "egresosCMA": {"cmaValidados": 5503, "pmCMA": 0.478620097738961, "ehValidados": 22751, "pmEH": 1.22684053894692, "pctEgresos": 0.525872857637988, "pctCMA": 0.0259036790203042, "pctCajaI": 0.551776536658292, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 670, "diasCamaDispDotacion": 244550, "diasEstadaREM": 205388, "pctOcupacion": 0.839860969126968, "diasCamaDispExtra": 0, "promDiasEstada": 8.91, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.23072785562448, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 113130, "nombre": "Hospital Dr. Exequiel González Cortés (Santiago, San Miguel)", "componentes": {"grdGasto": 27577852.1986963, "grdAT": 169955.3, "ambulatorioMLE": 9647489, "hospDomiciliaria": 1012761, "trasplantes": null, "saludOral": 378576, "farmacia": 3074075.32513056, "egresosNoValidados": 46588.2969064394}, "fueraModelo": {"comprasExtrahosp": 1719132.97229, "sociosanitarios": null}, "financiero": {"planificacion2026": 56862761.8868812, "presupuestoComparable": 53967068, "produccionValorizada": 41860708.8238269, "pctGastoAsociado": 0.736170868856171, "difGastoCorregido": -15002053.0630543, "pctPresupuestoAsociado": 0.775671356165335, "deficitJustificado": 0}, "uph": {"uphTotal": 8906.5709965822, "uphUrgencia": 63.4524, "gastoUnitarioObservado": 3563840.4401527, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 467491.4401527, "varPB": 0.150981507624851, "efectoMayorGasto": 4163745.70201448}, "codSS": 44, "servicioSalud": "S.S. Met. Sur", "egresosCMA": {"cmaValidados": 1996, "pmCMA": 0.424402654867634, "ehValidados": 7995, "pmEH": 1.00806295152801, "pctEgresos": 0.502075746406145, "pctCMA": 0.0536528990172267, "pctCajaI": 0.555728645423371, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 164, "diasCamaDispDotacion": 59860, "diasEstadaREM": 42392, "pctOcupacion": 0.7081857667891748, "diasCamaDispExtra": 6059.563237493764, "promDiasEstada": 5.29, "egresosExtraPotenciales": 1145.4750921538307, "pesoMedioObsEH": 1.00716469560878, "uphExtraPotenciales": 1153.6820725165521, "ingresoExtraPotencialM": 3572202.3315545535}}, {"codDeis": 113180, "nombre": "Hospital El Pino (Santiago, San Bernardo)", "componentes": {"grdGasto": 39384136.5042648, "grdAT": 9994.2, "ambulatorioMLE": 19875921, "hospDomiciliaria": 3927772, "trasplantes": null, "saludOral": 321811, "farmacia": 4917828.47217591, "egresosNoValidados": 1646585.14436686}, "fueraModelo": {"comprasExtrahosp": 4928657.468886, "sociosanitarios": null}, "financiero": {"planificacion2026": 78306154.6318769, "presupuestoComparable": 68537146, "produccionValorizada": 68437463.1764408, "pctGastoAsociado": 0.873972978218257, "difGastoCorregido": -9868691.45543613, "pctPresupuestoAsociado": 0.998545565005592, "deficitJustificado": 0}, "uph": {"uphTotal": 12719.5404989117, "uphUrgencia": 0.9819, "gastoUnitarioObservado": 3375967.88493082, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 279618.88493082, "varPB": 0.0903059974604994, "efectoMayorGasto": 3556623.7311381}, "codSS": 44, "servicioSalud": "S.S. Met. Sur", "egresosCMA": {"cmaValidados": 2994, "pmCMA": 0.534677555110221, "ehValidados": 12151, "pmEH": 0.915045337742715, "pctEgresos": 0.525379029826085, "pctCMA": 0.0281376033085485, "pctCajaI": 0.553516633134633, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 290, "diasCamaDispDotacion": 105850, "diasEstadaREM": 95851, "pctOcupacion": 0.9055361360415682, "diasCamaDispExtra": 0, "promDiasEstada": 7.52, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.913070467377666, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 113150, "nombre": "Hospital San Luis (Buin)", "componentes": {"grdGasto": 11207367.0718244, "grdAT": 0, "ambulatorioMLE": 7401849, "hospDomiciliaria": 853292, "trasplantes": null, "saludOral": 183810, "farmacia": 1255440.27211106, "egresosNoValidados": 726555.323437057}, "fueraModelo": {"comprasExtrahosp": 751227.37136522, "sociosanitarios": 94900}, "financiero": {"planificacion2026": 27963288.1848452, "presupuestoComparable": 18786599, "produccionValorizada": 20901758.3439354, "pctGastoAsociado": 0.74747140628702, "difGastoCorregido": -7061529.84090975, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.11258873114476}, "uph": {"uphTotal": 4781.88340037409, "uphUrgencia": 0.3109, "gastoUnitarioObservado": 2515164.84524433, "precioBasePropuesto": 2343714, "mayorGastoPorUPH": 171450.845244329, "varPB": 0.0731534842750988, "efectoMayorGasto": 819857.950853963}, "codSS": 44, "servicioSalud": "S.S. Met. Sur", "egresosCMA": {"cmaValidados": 984, "pmCMA": 0.638277134267305, "ehValidados": 5008, "pmEH": 0.829436641424732, "pctEgresos": 0.415998588914678, "pctCMA": 0.0269469794834625, "pctCajaI": 0.442945568398141, "precioBaseW": 2343714, "ajusteZona": 0}, "capacidad": {"camas": 100, "diasCamaDispDotacion": 36500, "diasEstadaREM": 27036, "pctOcupacion": 0.7407123287671233, "diasCamaDispExtra": 2507.6361204230266, "promDiasEstada": 4.98, "egresosExtraPotenciales": 503.541389643178, "pesoMedioObsEH": 0.821915193370166, "uphExtraPotenciales": 413.86831863845475, "ingresoExtraPotencialM": 969988.9725494074}}, {"codDeis": 114101, "nombre": "Complejo Hospitalario Dr. Sótero del Río (Santiago, Puente Alto)", "componentes": {"grdGasto": 164904746.896838, "grdAT": 5619790.3, "ambulatorioMLE": 55286694, "hospDomiciliaria": 18790039, "trasplantes": 519254.722395, "saludOral": 1132190, "farmacia": 33147551.2385944, "egresosNoValidados": 5083775.6166123}, "fueraModelo": {"comprasExtrahosp": 13043414.813989, "sociosanitarios": 1423500}, "financiero": {"planificacion2026": 288916558.594315, "presupuestoComparable": 278647645, "produccionValorizada": 279400266.157827, "pctGastoAsociado": 0.967062142499593, "difGastoCorregido": -9516292.4364875, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0027009779961622}, "uph": {"uphTotal": 53257.8035928243, "uphUrgencia": 1075.6331, "gastoUnitarioObservado": 3136094.0473795, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 39745.0473795021, "varPB": 0.0128361006396573, "efectoMayorGasto": 2116733.92712502}, "codSS": 47, "servicioSalud": "S.S. Met. Sur Oriente", "egresosCMA": {"cmaValidados": 10595, "pmCMA": 0.624994279711044, "ehValidados": 37391, "pmEH": 1.24725172365772, "pctEgresos": 0.562391186068932, "pctCMA": 0.032483477696527, "pctCajaI": 0.594874663765459, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 733, "diasCamaDispDotacion": 267545, "diasEstadaREM": 236775, "pctOcupacion": 0.8849913098731055, "diasCamaDispExtra": 0, "promDiasEstada": 6.06, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.23481671963096, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 114105, "nombre": "Hospital Clinico Metropolitano La Florida Dra. Eloisa Diaz Inzunza", "componentes": {"grdGasto": 57321686.7045889, "grdAT": 2064968.3, "ambulatorioMLE": 22563991, "hospDomiciliaria": 13338494, "trasplantes": null, "saludOral": 597191, "farmacia": 13771842.9558826, "egresosNoValidados": -1311533.01335445}, "fueraModelo": {"comprasExtrahosp": 12864460.881891, "sociosanitarios": 569400}, "financiero": {"planificacion2026": 161836517.729956, "presupuestoComparable": 133971407, "produccionValorizada": 109658173.960472, "pctGastoAsociado": 0.677586094279721, "difGastoCorregido": -52178343.7694841, "pctPresupuestoAsociado": 0.818519237918219, "deficitJustificado": 0}, "uph": {"uphTotal": 18512.6698264921, "uphUrgencia": 1.0084, "gastoUnitarioObservado": 5704921.99507949, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 2608572.99507949, "varPB": 0.842467368852637, "efectoMayorGasto": 48291650.5762101}, "codSS": 47, "servicioSalud": "S.S. Met. Sur Oriente", "egresosCMA": {"cmaValidados": 4648, "pmCMA": 0.555154604716141, "ehValidados": 14994, "pmEH": 1.06257911323005, "pctEgresos": 0.559471716598387, "pctCMA": 0.0431559940667099, "pctCajaI": 0.602627710665097, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 397, "diasCamaDispDotacion": 144905, "diasEstadaREM": 113171, "pctOcupacion": 0.7810013457092578, "diasCamaDispExtra": 4117.235398079416, "promDiasEstada": 7.72, "egresosExtraPotenciales": 533.3206474196135, "pesoMedioObsEH": 1.04987066884844, "uphExtraPotenciales": 559.9177048171126, "ingresoExtraPotencialM": 1733700.625392762}}, {"codDeis": 114103, "nombre": "Hospital Padre Alberto Hurtado (San Ramón)", "componentes": {"grdGasto": 60513912.8308055, "grdAT": 977266.4, "ambulatorioMLE": 26261857, "hospDomiciliaria": 5974054, "trasplantes": null, "saludOral": null, "farmacia": 9836633.14825484, "egresosNoValidados": 284837.169763784}, "fueraModelo": {"comprasExtrahosp": 12111789.025682, "sociosanitarios": 189800}, "financiero": {"planificacion2026": 122265427.29972, "presupuestoComparable": 111109709, "produccionValorizada": 103563723.37906, "pctGastoAsociado": 0.847040129546884, "difGastoCorregido": -18701703.9206601, "pctPresupuestoAsociado": 0.932085272395595, "deficitJustificado": 0}, "uph": {"uphTotal": 19543.6344, "uphUrgencia": 3947.5296, "gastoUnitarioObservado": 3766097.00123235, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 669748.001232351, "varPB": 0.216302490847237, "efectoMayorGasto": 13089310.0762158}, "codSS": 47, "servicioSalud": "S.S. Met. Sur Oriente", "egresosCMA": {"cmaValidados": 6369, "pmCMA": 0.506408839793712, "ehValidados": 15912, "pmEH": 1.02553522494682, "pctEgresos": 0.505256002325524, "pctCMA": 0.0362635653229233, "pctCajaI": 0.541519567648448, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 371, "diasCamaDispDotacion": 135415, "diasEstadaREM": 110194, "pctOcupacion": 0.8137503230808995, "diasCamaDispExtra": 0, "promDiasEstada": 6.87, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.02625262727844, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 115100, "nombre": "Hospital Regional de Rancagua", "componentes": {"grdGasto": 92440638.304081, "grdAT": 1634369.3, "ambulatorioMLE": 35481901, "hospDomiciliaria": 4507575, "trasplantes": null, "saludOral": 361534, "farmacia": 26274108.1640775, "egresosNoValidados": 811771.981036717}, "fueraModelo": {"comprasExtrahosp": 3835297.120413, "sociosanitarios": null}, "financiero": {"planificacion2026": 176659598.640063, "presupuestoComparable": 152412557, "produccionValorizada": 160700125.768159, "pctGastoAsociado": 0.909659746796884, "difGastoCorregido": -15959472.8719041, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0543758921921274}, "uph": {"uphTotal": 29854.7219012072, "uphUrgencia": 706.2177, "gastoUnitarioObservado": 3597396.68510499, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 501047.685104994, "varPB": 0.161818866382631, "efectoMayorGasto": 14958639.2980532}, "codSS": 28, "servicioSalud": "S.S. O'Higgins", "egresosCMA": {"cmaValidados": 6116, "pmCMA": 0.541558731121794, "ehValidados": 22692, "pmEH": 1.16968749787001, "pctEgresos": 0.558140605691925, "pctCMA": 0.0252993445648528, "pctCajaI": 0.583439950256778, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 536, "diasCamaDispDotacion": 195640, "diasEstadaREM": 161934, "pctOcupacion": 0.8277141688816193, "diasCamaDispExtra": 0, "promDiasEstada": 7.07, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.17092604726336, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 115107, "nombre": "Hospital San Juan de Dios (San Fernando)", "componentes": {"grdGasto": 25458272.2023946, "grdAT": 181786.8, "ambulatorioMLE": 16499041, "hospDomiciliaria": 3126030, "trasplantes": null, "saludOral": 187017, "farmacia": 5345698.14177717, "egresosNoValidados": 1184413.2506668}, "fueraModelo": {"comprasExtrahosp": -1096834.20441361, "sociosanitarios": null}, "financiero": {"planificacion2026": 50834676.0138707, "presupuestoComparable": 43877855, "produccionValorizada": 50797845.1441718, "pctGastoAsociado": 0.9992754774381, "difGastoCorregido": -36830.8696989045, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.157710310683414}, "uph": {"uphTotal": 8222.0293004421, "uphUrgencia": 371.8865, "gastoUnitarioObservado": 3184796.75915761, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 88447.7591576125, "varPB": 0.0285651776197103, "efectoMayorGasto": 727220.067352336}, "codSS": 28, "servicioSalud": "S.S. O'Higgins", "egresosCMA": {"cmaValidados": 2875, "pmCMA": 0.540263965382995, "ehValidados": 7201, "pmEH": 0.926089487566448, "pctEgresos": 0.469111473023437, "pctCMA": 0.0499143863016182, "pctCajaI": 0.519025859325055, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 166, "diasCamaDispDotacion": 60590, "diasEstadaREM": 46732, "pctOcupacion": 0.7712823898333059, "diasCamaDispExtra": 2310.4359599022237, "promDiasEstada": 6.34, "egresosExtraPotenciales": 364.42207569435703, "pesoMedioObsEH": 0.92168023318872, "uphExtraPotenciales": 335.8806237050924, "ingresoExtraPotencialM": 1040003.6333286391}}, {"codDeis": 115104, "nombre": "Hospital de Rengo", "componentes": {"grdGasto": 18816067.921436, "grdAT": 134891.4, "ambulatorioMLE": 6826042, "hospDomiciliaria": 562220, "trasplantes": null, "saludOral": 261998, "farmacia": 2234858.42040228, "egresosNoValidados": 109022.764137607}, "fueraModelo": {"comprasExtrahosp": 340430.999053999, "sociosanitarios": null}, "financiero": {"planificacion2026": 27724131.4110526, "presupuestoComparable": 24772450, "produccionValorizada": 28836077.7418383, "pctGastoAsociado": 1.04010752633868, "difGastoCorregido": 1111946.3307857, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.164038185235545}, "uph": {"uphTotal": 6076.85629799354, "uphUrgencia": 34.7742000000001, "gastoUnitarioObservado": 2540045.45981102, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 28, "servicioSalud": "S.S. O'Higgins", "egresosCMA": {"cmaValidados": 1452, "pmCMA": 0.625909710638406, "ehValidados": 6450, "pmEH": 0.801245798162259, "pctEgresos": 0.52401198194112, "pctCMA": 0.0156394883878864, "pctCajaI": 0.539651470329006, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 104, "diasCamaDispDotacion": 37960, "diasEstadaREM": 31571, "pctOcupacion": 0.8316912539515279, "diasCamaDispExtra": 0, "promDiasEstada": 4.86, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.800925146288882, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 115110, "nombre": "Hospital de Santa Cruz", "componentes": {"grdGasto": 15634719.811973, "grdAT": 46842.6, "ambulatorioMLE": 8072488, "hospDomiciliaria": 426358, "trasplantes": null, "saludOral": 213080, "farmacia": 1323214.47492149, "egresosNoValidados": 447052.727166494}, "fueraModelo": {"comprasExtrahosp": 1085802.374974, "sociosanitarios": null}, "financiero": {"planificacion2026": 27569834.915506, "presupuestoComparable": 25736228, "produccionValorizada": 25716702.8868945, "pctGastoAsociado": 0.932784072364205, "difGastoCorregido": -1853132.02861147, "pctPresupuestoAsociado": 0.999241337421105, "deficitJustificado": 0}, "uph": {"uphTotal": 5049.40489976195, "uphUrgencia": 3.3193, "gastoUnitarioObservado": 3190612.22283092, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 94263.2228309186, "varPB": 0.0304433456405976, "efectoMayorGasto": 475973.179229793}, "codSS": 28, "servicioSalud": "S.S. O'Higgins", "egresosCMA": {"cmaValidados": 2191, "pmCMA": 0.549410862658613, "ehValidados": 4737, "pmEH": 0.811831475549277, "pctEgresos": 0.445552463301275, "pctCMA": 0.12495939759649, "pctCajaI": 0.570511860897766, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 87, "diasCamaDispDotacion": 31755, "diasEstadaREM": 24146, "pctOcupacion": 0.7603841914659109, "diasCamaDispExtra": 1556.9634247680356, "promDiasEstada": 4.92, "egresosExtraPotenciales": 316.4559806439097, "pesoMedioObsEH": 0.804104235389941, "uphExtraPotenciales": 254.463594350245, "ingresoExtraPotencialM": 787908.0959027867}}, {"codDeis": 123100, "nombre": "Hospital Base San José de Osorno", "componentes": {"grdGasto": 59494140.6033341, "grdAT": 648132.9, "ambulatorioMLE": 33179001, "hospDomiciliaria": 3476065, "trasplantes": 27426.758572, "saludOral": 1518577, "farmacia": 13427680.0550072, "egresosNoValidados": 626783.012620151}, "fueraModelo": {"comprasExtrahosp": 2084832.41162092, "sociosanitarios": null}, "financiero": {"planificacion2026": 128623763.912341, "presupuestoComparable": 96796105, "produccionValorizada": 111771023.316913, "pctGastoAsociado": 0.868976462180712, "difGastoCorregido": -16852740.5954278, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.154705794379983}, "uph": {"uphTotal": 18490.0233990307, "uphUrgencia": 869.3656, "gastoUnitarioObservado": 3632274.59056196, "precioBasePropuesto": 3217634.68435918, "mayorGastoPorUPH": 414639.906202784, "varPB": 0.128864817444421, "efectoMayorGasto": 7666701.56786138}, "codSS": 38, "servicioSalud": "S.S. Osorno", "egresosCMA": {"cmaValidados": 3300, "pmCMA": 0.583063212069685, "ehValidados": 17206, "pmEH": 0.962798721329814, "pctEgresos": 0.559639064120591, "pctCMA": 0.0179906172769279, "pctCajaI": 0.577629681397519, "precioBaseW": 3096349, "ajusteZona": 121285.684359178}, "capacidad": {"camas": 384, "diasCamaDispDotacion": 140160, "diasEstadaREM": 107329, "pctOcupacion": 0.7657605593607306, "diasCamaDispExtra": 6118.562702424425, "promDiasEstada": 6.17, "egresosExtraPotenciales": 991.6633229213006, "pesoMedioObsEH": 0.962782609945387, "uphExtraPotenciales": 954.7562022292849, "ingresoExtraPotencialM": 3072056.6713999943}}, {"codDeis": 124105, "nombre": "Hospital de Puerto Montt", "componentes": {"grdGasto": 97846784.5686968, "grdAT": 1664720.2, "ambulatorioMLE": 39150067, "hospDomiciliaria": 2680459, "trasplantes": null, "saludOral": 1025194, "farmacia": 30907950.9853675, "egresosNoValidados": 1251113.58359523}, "fueraModelo": {"comprasExtrahosp": 3938442.672311, "sociosanitarios": null}, "financiero": {"planificacion2026": 224448158.377982, "presupuestoComparable": 182343433, "produccionValorizada": 173275175.754064, "pctGastoAsociado": 0.772005335246547, "difGastoCorregido": -51172982.6239181, "pctPresupuestoAsociado": 0.950268254267563, "deficitJustificado": 0}, "uph": {"uphTotal": 30372.4974051584, "uphUrgencia": 1964.844, "gastoUnitarioObservado": 4037029.76680842, "precioBasePropuesto": 3221558.74320953, "mayorGastoPorUPH": 815471.023598888, "varPB": 0.253129335393233, "efectoMayorGasto": 24767891.5482391}, "codSS": 39, "servicioSalud": "S.S. Reloncaví", "egresosCMA": {"cmaValidados": 6875, "pmCMA": 0.609963016740562, "ehValidados": 25361, "pmEH": 1.03225431430413, "pctEgresos": 0.532199481234321, "pctCMA": 0.0244412670577149, "pctCajaI": 0.556640748292036, "precioBaseW": 3096349, "ajusteZona": 125209.743209531}, "capacidad": {"camas": 600, "diasCamaDispDotacion": 219000, "diasEstadaREM": 190003, "pctOcupacion": 0.867593607305936, "diasCamaDispExtra": 0, "promDiasEstada": 7.46, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.03679522481838, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 119100, "nombre": "Hospital Las Higueras (Talcahuano)", "componentes": {"grdGasto": 81856740.8798249, "grdAT": 3044706.2, "ambulatorioMLE": 42453571, "hospDomiciliaria": 3835655, "trasplantes": null, "saludOral": 1036312, "farmacia": 22817515.8031997, "egresosNoValidados": 1120658.29150661}, "fueraModelo": {"comprasExtrahosp": 4196650.05181318, "sociosanitarios": 379600}, "financiero": {"planificacion2026": 182865362.529439, "presupuestoComparable": 142046299, "produccionValorizada": 155044500.883025, "pctGastoAsociado": 0.84786150169945, "difGastoCorregido": -27820861.6464146, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0915067972522439}, "uph": {"uphTotal": 25174.2405956809, "uphUrgencia": 662.3033, "gastoUnitarioObservado": 3787370.53133379, "precioBasePropuesto": 3251607.15647839, "mayorGastoPorUPH": 535763.374855397, "varPB": 0.164768789424012, "efectoMayorGasto": 13487436.1009638}, "codSS": 32, "servicioSalud": "S.S. Talcahuano", "egresosCMA": {"cmaValidados": 3650, "pmCMA": 0.690444492340089, "ehValidados": 22329, "pmEH": 1.01456035642615, "pctEgresos": 0.547099921737691, "pctCMA": 0.0105827542856772, "pctCajaI": 0.557682676023368, "precioBaseW": 3096349, "ajusteZona": 155258.156478391}, "capacidad": {"camas": 422, "diasCamaDispDotacion": 154030, "diasEstadaREM": 132615, "pctOcupacion": 0.8609686424722457, "diasCamaDispExtra": 0, "promDiasEstada": 5.85, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.01438951990116, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 119102, "nombre": "Hospital Penco - Lirquén", "componentes": {"grdGasto": 9425995.79348315, "grdAT": 0, "ambulatorioMLE": 7330093, "hospDomiciliaria": 842789, "trasplantes": null, "saludOral": 377825, "farmacia": 1453526.87816217, "egresosNoValidados": -47337.7780529287}, "fueraModelo": {"comprasExtrahosp": 212810.45121, "sociosanitarios": null}, "financiero": {"planificacion2026": 30061413.8954253, "presupuestoComparable": 22537906, "produccionValorizada": 19430229.6716453, "pctGastoAsociado": 0.646351157641397, "difGastoCorregido": -10631184.22378, "pctPresupuestoAsociado": 0.862113351242362, "deficitJustificado": 0}, "uph": {"uphTotal": 2931.47590484611, "uphUrgencia": 0, "gastoUnitarioObservado": 3762616.86909819, "precioBasePropuesto": 3215443.72167642, "mayorGastoPorUPH": 547173.14742177, "varPB": 0.170170338772558, "efectoMayorGasto": 1604024.89744573}, "codSS": 32, "servicioSalud": "S.S. Talcahuano", "egresosCMA": {"cmaValidados": 1683, "pmCMA": 0.499726797910995, "ehValidados": 2566, "pmEH": 0.814667070912669, "pctEgresos": 0.301058985407654, "pctCMA": 0.0748072419200511, "pctCajaI": 0.375866227327705, "precioBaseW": 3096349, "ajusteZona": 119094.721676424}, "capacidad": {"camas": 60, "diasCamaDispDotacion": 21900, "diasEstadaREM": 18820, "pctOcupacion": 0.8593607305936073, "diasCamaDispExtra": 0, "promDiasEstada": 7.41, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.809700945254037, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 119101, "nombre": "Hospital de Tomé", "componentes": {"grdGasto": 10736320.2193462, "grdAT": 19252.8, "ambulatorioMLE": 8686965, "hospDomiciliaria": 356672, "trasplantes": null, "saludOral": 654820, "farmacia": 1700885.52730051, "egresosNoValidados": 50050.5897635281}, "fueraModelo": {"comprasExtrahosp": 112724.863175, "sociosanitarios": 854100}, "financiero": {"planificacion2026": 30589868.9236063, "presupuestoComparable": 28488779, "produccionValorizada": 22154915.5466467, "pctGastoAsociado": 0.724256635488544, "difGastoCorregido": -8434953.37695965, "pctPresupuestoAsociado": 0.777671642110274, "deficitJustificado": 0}, "uph": {"uphTotal": 3304.55969984696, "uphUrgencia": 0, "gastoUnitarioObservado": 3708237.34877711, "precioBasePropuesto": 3248941.21895978, "mayorGastoPorUPH": 459296.129817328, "varPB": 0.141367940773143, "efectoMayorGasto": 1517771.48089002}, "codSS": 32, "servicioSalud": "S.S. Talcahuano", "egresosCMA": {"cmaValidados": 1423, "pmCMA": 0.530828320449754, "ehValidados": 3270, "pmEH": 0.779569113103047, "pctEgresos": 0.367338470754432, "pctCMA": 0.0601541656386511, "pctCajaI": 0.427492636393083, "precioBaseW": 3096349, "ajusteZona": 152592.218959784}, "capacidad": {"camas": 94, "diasCamaDispDotacion": 34310, "diasEstadaREM": 31107, "pctOcupacion": 0.9066452929175167, "diasCamaDispExtra": 0, "promDiasEstada": 9.46, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.779999878308488, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 102100, "nombre": "Hospital Dr. Ernesto Torres Galdames (Iquique)", "componentes": {"grdGasto": 57654135.3970871, "grdAT": 678570.4, "ambulatorioMLE": 21987662, "hospDomiciliaria": 4808457, "trasplantes": 5566.138105, "saludOral": 727774, "farmacia": 11896784.4963296, "egresosNoValidados": 1417511.51669279}, "fueraModelo": {"comprasExtrahosp": 5423912.541642, "sociosanitarios": null}, "financiero": {"planificacion2026": 135871606.828729, "presupuestoComparable": 102614871, "produccionValorizada": 97758949.4315216, "pctGastoAsociado": 0.719495056496612, "difGastoCorregido": -38112657.3972071, "pctPresupuestoAsociado": 0.952678188637216, "deficitJustificado": 0}, "uph": {"uphTotal": 16438.5348010712, "uphUrgencia": 1556.8457, "gastoUnitarioObservado": 4177152.73429097, "precioBasePropuesto": 3507255.12308616, "mayorGastoPorUPH": 669897.611204811, "varPB": 0.191003388032788, "efectoMayorGasto": 11012135.1949447}, "codSS": 21, "servicioSalud": "S.S. Tarapacá", "egresosCMA": {"cmaValidados": 2833, "pmCMA": 0.469152630057261, "ehValidados": 15630, "pmEH": 0.966693883564873, "pctEgresos": 0.489227185113038, "pctCMA": 0.0234318105309395, "pctCajaI": 0.512658995643977, "precioBaseW": 3096349, "ajusteZona": 410906.123086162}, "capacidad": {"camas": 400, "diasCamaDispDotacion": 146000, "diasEstadaREM": 124184, "pctOcupacion": 0.8505753424657534, "diasCamaDispExtra": 0, "promDiasEstada": 7.74, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.970110396657104, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 106100, "nombre": "Hospital Carlos Van Buren (Valparaíso)", "componentes": {"grdGasto": 65284254.9221399, "grdAT": 647575.5, "ambulatorioMLE": 30350655, "hospDomiciliaria": 3864388, "trasplantes": 3705.806438, "saludOral": 77118, "farmacia": 19199562.0104956, "egresosNoValidados": 194047.574666235}, "fueraModelo": {"comprasExtrahosp": 4344623.300098, "sociosanitarios": 3131700}, "financiero": {"planificacion2026": 155470181.767919, "presupuestoComparable": 130009568, "produccionValorizada": 119427259.239074, "pctGastoAsociado": 0.768168261469913, "difGastoCorregido": -36042922.5288453, "pctPresupuestoAsociado": 0.918603615689835, "deficitJustificado": 0}, "uph": {"uphTotal": 21084.2688993198, "uphUrgencia": 3183.2652, "gastoUnitarioObservado": 3288771.93381444, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 192422.933814442, "varPB": 0.0621451050299697, "efectoMayorGasto": 4057096.87893971}, "codSS": 25, "servicioSalud": "S.S. Valparaíso-San Antonio", "egresosCMA": {"cmaValidados": 3281, "pmCMA": 0.389362572272453, "ehValidados": 17299, "pmEH": 1.14496620034071, "pctEgresos": 0.44516997822063, "pctCMA": 0.0211600344751686, "pctCajaI": 0.466330012695798, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 437, "diasCamaDispDotacion": 159505, "diasEstadaREM": 139468, "pctOcupacion": 0.8743801134760666, "diasCamaDispExtra": 0, "promDiasEstada": 8.02, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.14565653351778, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 106103, "nombre": "Hospital Claudio Vicuña ( San Antonio)", "componentes": {"grdGasto": 27326938.0195209, "grdAT": 106012.2, "ambulatorioMLE": 15145875, "hospDomiciliaria": 1635653, "trasplantes": null, "saludOral": 301730, "farmacia": 4313708.30757342, "egresosNoValidados": 189816.412020283}, "fueraModelo": {"comprasExtrahosp": 206438.065725, "sociosanitarios": 854100}, "financiero": {"planificacion2026": 68895060.8485953, "presupuestoComparable": 70938522, "produccionValorizada": 48829916.5270943, "pctGastoAsociado": 0.708757869223799, "difGastoCorregido": -20065144.3215009, "pctPresupuestoAsociado": 0.688341329230039, "deficitJustificado": 0}, "uph": {"uphTotal": 8825.53549988096, "uphUrgencia": 178.112, "gastoUnitarioObservado": 3632795.23913619, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 536446.239136188, "varPB": 0.173251219141055, "efectoMayorGasto": 4734425.32727406}, "codSS": 25, "servicioSalud": "S.S. Valparaíso-San Antonio", "egresosCMA": {"cmaValidados": 2906, "pmCMA": 0.530379146517189, "ehValidados": 8332, "pmEH": 0.874250324064092, "pctEgresos": 0.453989905989956, "pctCMA": 0.0365409239289776, "pctCajaI": 0.490530829918934, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 179, "diasCamaDispDotacion": 65335, "diasEstadaREM": 51400, "pctOcupacion": 0.7867146246269228, "diasCamaDispExtra": 1483.1086555572217, "promDiasEstada": 6.13, "egresosExtraPotenciales": 241.94268443021562, "pesoMedioObsEH": 0.875229979735368, "uphExtraPotenciales": 211.75549079097814, "ingresoExtraPotencialM": 655668.9021551544}}, {"codDeis": 106102, "nombre": "Hospital Dr. Eduardo Pereira Ramírez (Valparaíso)", "componentes": {"grdGasto": 20213884.957748, "grdAT": 188802, "ambulatorioMLE": 3705719, "hospDomiciliaria": 1649810, "trasplantes": 123328.28467, "saludOral": null, "farmacia": 1641996.17521067, "egresosNoValidados": 12285.694562552}, "fueraModelo": {"comprasExtrahosp": 2066151.798853, "sociosanitarios": 1233700}, "financiero": {"planificacion2026": 37434524.2952365, "presupuestoComparable": 30467301, "produccionValorizada": 27523540.4176286, "pctGastoAsociado": 0.735244829092993, "difGastoCorregido": -9910983.87760784, "pctPresupuestoAsociado": 0.903379673100306, "deficitJustificado": 0}, "uph": {"uphTotal": 6528.29669967693, "uphUrgencia": 0, "gastoUnitarioObservado": 4650356.17975171, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 1554007.17975171, "varPB": 0.501883728142956, "efectoMayorGasto": 10145019.9428474}, "codSS": 25, "servicioSalud": "S.S. Valparaíso-San Antonio", "egresosCMA": {"cmaValidados": 351, "pmCMA": 0.789291737601073, "ehValidados": 4635, "pmEH": 1.348706645044, "pctEgresos": 0.754673404394269, "pctCMA": 0.0141799650253255, "pctCajaI": 0.768853369419595, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 155, "diasCamaDispDotacion": 56575, "diasEstadaREM": 48916, "pctOcupacion": 0.864622182942996, "diasCamaDispExtra": 0, "promDiasEstada": 10.54, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.3473611242731, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 107100, "nombre": "Hospital Dr. Gustavo Fricke (Viña del Mar)", "componentes": {"grdGasto": 102186720.028149, "grdAT": 4200278, "ambulatorioMLE": 39281078, "hospDomiciliaria": 2727213, "trasplantes": 244267.223171, "saludOral": 532022, "farmacia": 23423106.6855947, "egresosNoValidados": 569329.105143919}, "fueraModelo": {"comprasExtrahosp": 6914844.592374, "sociosanitarios": null}, "financiero": {"planificacion2026": 224334501.33751, "presupuestoComparable": 200550243, "produccionValorizada": 172594684.936915, "pctGastoAsociado": 0.769363089082971, "difGastoCorregido": -51739816.4005954, "pctPresupuestoAsociado": 0.860605713336955, "deficitJustificado": 0}, "uph": {"uphTotal": 33002.3262972453, "uphUrgencia": 2384.8946, "gastoUnitarioObservado": 3990895.88150996, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 894546.881509964, "varPB": 0.288903764242973, "efectoMayorGasto": 29522128.071775}, "codSS": 26, "servicioSalud": "S.S. Viña del Mar-Quillota", "egresosCMA": {"cmaValidados": 4538, "pmCMA": 0.53612849224471, "ehValidados": 23444, "pmEH": 1.3039317181129, "pctEgresos": 0.581222569334844, "pctCMA": 0.034954664423147, "pctCajaI": 0.616177233757991, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 560, "diasCamaDispDotacion": 204400, "diasEstadaREM": 175967, "pctOcupacion": 0.8608953033268102, "diasCamaDispExtra": 0, "promDiasEstada": 7.45, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.30279995344507, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 107101, "nombre": "Hospital San Martín (Quillota)", "componentes": {"grdGasto": 44674970.5421948, "grdAT": 345638.6, "ambulatorioMLE": 24097899, "hospDomiciliaria": 2082207, "trasplantes": null, "saludOral": 483863, "farmacia": 8186959.20914576, "egresosNoValidados": -77013.0207060607}, "fueraModelo": {"comprasExtrahosp": 3325536.69584685, "sociosanitarios": 189800}, "financiero": {"planificacion2026": 116395333.488363, "presupuestoComparable": 102693941, "produccionValorizada": 79871537.3513405, "pctGastoAsociado": 0.686209102698483, "difGastoCorregido": -36523796.1370228, "pctPresupuestoAsociado": 0.777762899870992, "deficitJustificado": 0}, "uph": {"uphTotal": 14428.2736029417, "uphUrgencia": 1942.1943, "gastoUnitarioObservado": 5005890.05810249, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 1909541.05810249, "varPB": 0.616707308543867, "efectoMayorGasto": 27551380.8423535}, "codSS": 26, "servicioSalud": "S.S. Viña del Mar-Quillota", "egresosCMA": {"cmaValidados": 6402, "pmCMA": 0.547500343645268, "ehValidados": 10368, "pmEH": 1.05354710676357, "pctEgresos": 0.5316535694219, "pctCMA": 0.0707992803195973, "pctCajaI": 0.602452849741498, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 290, "diasCamaDispDotacion": 105850, "diasEstadaREM": 93163, "pctOcupacion": 0.8801417099669343, "diasCamaDispExtra": 0, "promDiasEstada": 9, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.05202795480881, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 107102, "nombre": "Hospital de Quilpué", "componentes": {"grdGasto": 23598269.6585558, "grdAT": 0, "ambulatorioMLE": 11211157, "hospDomiciliaria": 1742956, "trasplantes": null, "saludOral": 269185, "farmacia": 3952597.82138897, "egresosNoValidados": 67705.0753420492}, "fueraModelo": {"comprasExtrahosp": 1509972.62161741, "sociosanitarios": null}, "financiero": {"planificacion2026": 60580625.6440075, "presupuestoComparable": 50217682, "produccionValorizada": 40774165.4799448, "pctGastoAsociado": 0.673056196539596, "difGastoCorregido": -19806460.1640627, "pctPresupuestoAsociado": 0.811948378659628, "deficitJustificado": 0}, "uph": {"uphTotal": 7621.32100049311, "uphUrgencia": 814.9638, "gastoUnitarioObservado": 4085094.1347426, "precioBasePropuesto": 3096349, "mayorGastoPorUPH": 988745.134742598, "varPB": 0.319326127236496, "efectoMayorGasto": 7535544.05954915}, "codSS": 26, "servicioSalud": "S.S. Viña del Mar-Quillota", "egresosCMA": {"cmaValidados": 3226, "pmCMA": 0.491497861128333, "ehValidados": 7060, "pmEH": 0.85492194057976, "pctEgresos": 0.474799815266387, "pctCMA": 0.0331102397650682, "pctCajaI": 0.507910055031456, "precioBaseW": 3096349, "ajusteZona": 0}, "capacidad": {"camas": 150, "diasCamaDispDotacion": 54750, "diasEstadaREM": 45426, "pctOcupacion": 0.8296986301369863, "diasCamaDispExtra": 0, "promDiasEstada": 6.42, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 0.855172136703855, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 117101, "nombre": "Hospital Clínico Herminda Martín (Chillán)", "componentes": {"grdGasto": 70365933.8053965, "grdAT": 572674, "ambulatorioMLE": 38294181, "hospDomiciliaria": 4378894, "trasplantes": 11437.074717, "saludOral": 917467, "farmacia": 19070172.4296068, "egresosNoValidados": 1171903.20568123}, "fueraModelo": {"comprasExtrahosp": 1229859.7588, "sociosanitarios": null}, "financiero": {"planificacion2026": 157114036.638855, "presupuestoComparable": 128319318, "produccionValorizada": 133610759.30972, "pctGastoAsociado": 0.850406253750834, "difGastoCorregido": -23503277.3291351, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.0412365136613357}, "uph": {"uphTotal": 21872.4872995578, "uphUrgencia": 2236.1162, "gastoUnitarioObservado": 3658383.1339895, "precioBasePropuesto": 3217097.93868844, "mayorGastoPorUPH": 441285.195301065, "varPB": 0.137168716561042, "efectoMayorGasto": 9652004.82970545}, "codSS": 30, "servicioSalud": "S.S. Ñuble", "egresosCMA": {"cmaValidados": 5099, "pmCMA": 0.618342204320447, "ehValidados": 18320, "pmEH": 1.02181006548733, "pctEgresos": 0.492588691953561, "pctCMA": 0.0396995010642261, "pctCajaI": 0.532288193017787, "precioBaseW": 3096349, "ajusteZona": 120748.938688437}, "capacidad": {"camas": 470, "diasCamaDispDotacion": 171550, "diasEstadaREM": 142786, "pctOcupacion": 0.8323287671232876, "diasCamaDispExtra": 0, "promDiasEstada": 7.68, "egresosExtraPotenciales": 0, "pesoMedioObsEH": 1.02252063492063, "uphExtraPotenciales": 0, "ingresoExtraPotencialM": 0.0}}, {"codDeis": 117102, "nombre": "Hospital de San Carlos", "componentes": {"grdGasto": 24609355.6705742, "grdAT": 51655.8, "ambulatorioMLE": 13902975, "hospDomiciliaria": 344782, "trasplantes": null, "saludOral": 469174, "farmacia": 4818455.36499468, "egresosNoValidados": 224692.233014165}, "fueraModelo": {"comprasExtrahosp": 1650460.551147, "sociosanitarios": null}, "financiero": {"planificacion2026": 48413075.9814976, "presupuestoComparable": 39533074, "produccionValorizada": 44196397.8355689, "pctGastoAsociado": 0.912902081504999, "difGastoCorregido": -4216678.14592875, "pctPresupuestoAsociado": 1, "deficitJustificado": 0.117960061379716}, "uph": {"uphTotal": 7587.99360020405, "uphUrgencia": 0, "gastoUnitarioObservado": 2794985.6014559, "precioBasePropuesto": 3243196.68244217, "mayorGastoPorUPH": 0, "varPB": 0, "efectoMayorGasto": 0}, "codSS": 30, "servicioSalud": "S.S. Ñuble", "egresosCMA": {"cmaValidados": 2088, "pmCMA": 0.542039846816588, "ehValidados": 7482, "pmEH": 0.862899545582867, "pctEgresos": 0.424254538147521, "pctCMA": 0.0326198881624736, "pctCajaI": 0.456874426309994, "precioBaseW": 3096349, "ajusteZona": 146847.682442167}, "capacidad": {"camas": 130, "diasCamaDispDotacion": 47450, "diasEstadaREM": 37177, "pctOcupacion": 0.7834984193888304, "diasCamaDispExtra": 1229.7269565499362, "promDiasEstada": 4.91, "egresosExtraPotenciales": 250.45355530548596, "pesoMedioObsEH": 0.861993654990086, "uphExtraPotenciales": 215.8893755430375, "ingresoExtraPotencialM": 700171.7065356909}}]</script>
+<script>const DATA = JSON.parse(document.getElementById('hospital-data').textContent);
+
+const COMP_DEFS = [
+  { key: 'grdCombinado', shortLabel: 'A. GRD', label: 'A. GRD (egresos y CMA)', color: 'var(--c-a)', hex: '#0F69B4' },
+  { key: 'egresosNoValidados', shortLabel: 'B. Egresos no validados', label: 'B. Egresos no validados', color: 'var(--c-g)', hex: '#6B7280' },
+  { key: 'ambulatorioMLE', shortLabel: 'C. Ambulatorio y urgencia', label: 'C. Actividad ambulatoria y urgencia', color: 'var(--c-b)', hex: '#0E7C74' },
+  { key: 'hospDomiciliaria', shortLabel: 'D. Hosp. domiciliaria', label: 'D. Hospitalización domiciliaria', color: 'var(--c-c)', hex: '#4C8FBD' },
+  { key: 'trasplantes', shortLabel: 'E. Trasplantes', label: 'E. Trasplantes', color: 'var(--c-d)', hex: '#8C6BB1' },
+  { key: 'saludOral', shortLabel: 'F. Salud oral', label: 'F. Salud oral', color: 'var(--c-e)', hex: '#C97F2B' },
+  { key: 'farmacia', shortLabel: 'G. Farmacia y quirúrgicos', label: 'G. Productos farmacéuticos y quirúrgicos ambulatorios', color: 'var(--c-f)', hex: '#B23A2E' },
+];
+
+function fmtM(n){
+  if (n === null || n === undefined) return '—';
+  return Math.round(n).toLocaleString('es-CL');
+}
+function fmtPct(n){
+  if (n === null || n === undefined) return '—';
+  return (Math.round(n*1000)/10).toLocaleString('es-CL') + '%';
+}
+
+let compChart = null;
+
+function componentValues(h){
+  const grdCombinado = (h.componentes.grdGasto||0) + (h.componentes.grdAT||0);
+  return {
+    grdCombinado,
+    ambulatorioMLE: h.componentes.ambulatorioMLE||0,
+    hospDomiciliaria: h.componentes.hospDomiciliaria||0,
+    trasplantes: h.componentes.trasplantes||0,
+    saludOral: h.componentes.saludOral||0,
+    farmacia: h.componentes.farmacia||0,
+    egresosNoValidados: h.componentes.egresosNoValidados||0,
+  };
+}
+
+function computeTotals(h){
+  const comp = componentValues(h);
+  const modeloTotal = Object.values(comp).reduce((a,b)=>a+b, 0);
+  const presupuesto = h.financiero.presupuestoComparable || 0;
+  const planificacion = h.financiero.planificacion2026 || 0;
+  const pctAsociado = planificacion > 0 ? Math.min(1, modeloTotal / planificacion) : null;
+  const brecha = planificacion > 0 ? (modeloTotal - planificacion) / planificacion : null;
+  const gestionable = (h.fueraModelo.comprasExtrahosp||0) + (h.fueraModelo.sociosanitarios||0);
+  const totalExplicado = modeloTotal + gestionable;
+  const pctPlanificacionExplicado = planificacion > 0 ? (totalExplicado / planificacion) : null;
+  return { comp, modeloTotal, presupuesto, pctAsociado, brecha, gestionable, totalExplicado, planificacion, pctPlanificacionExplicado };
+}
+
+function render(h){
+  document.getElementById('codDeisLabel').textContent = 'Cod DEIS ' + h.codDeis;
+  document.getElementById('hospitalName').textContent = h.nombre.trim();
+  document.getElementById('codDeisLabelP2').textContent = 'Cod DEIS ' + h.codDeis;
+  document.getElementById('hospitalNameP2').textContent = h.nombre.trim();
+
+  // KPIs
+  const t = computeTotals(h);
+  document.getElementById('kpiProduccion').textContent = fmtM(t.modeloTotal);
+  document.getElementById('kpiPlanificacion').textContent = fmtM(t.planificacion);
+  document.getElementById('subPctAsociado').textContent = fmtPct(t.pctAsociado);
+
+  const brechaLabel = document.getElementById('subDeficitLabel');
+  const brechaCard = document.getElementById('subDeficitCard');
+  if (t.brecha !== null && t.brecha > 0) {
+    brechaLabel.textContent = 'Producción valorizada por sobre el gasto planificado';
+    brechaCard.className = 'kpi-card tone-green';
+  } else {
+    brechaLabel.textContent = 'Gasto planificado no justificado por producción';
+    brechaCard.className = 'kpi-card';
+  }
+  document.getElementById('subDeficit').textContent = t.brecha !== null ? fmtPct(Math.abs(t.brecha)) : '—';
+  document.getElementById('subDeficitMonto').textContent =
+    (t.planificacion ? fmtM(Math.abs(t.modeloTotal - t.planificacion)) + ' M$' : '—');
+
+  // Composition
+  const comp = t.comp;
+  const total = t.modeloTotal;
+  const bar = document.getElementById('compositionBar');
+  const legend = document.getElementById('compositionLegend');
+  bar.innerHTML = '';
+  legend.innerHTML = '';
+  COMP_DEFS.forEach(def => {
+    const v = comp[def.key];
+    const pct = total > 0 ? (v/total*100) : 0;
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.style.width = pct + '%';
+    seg.style.background = def.color;
+    seg.title = def.label + ': ' + fmtM(v) + ' M$ (' + pct.toFixed(1) + '%)';
+    bar.appendChild(seg);
+
+    const li = document.createElement('div');
+    li.className = 'legend-item';
+    li.innerHTML = '<span class="legend-dot" style="background:' + def.color + '"></span>' +
+      '<b>' + def.label + '</b><span class="mono">' + pct.toFixed(1) + '%</span>';
+    legend.appendChild(li);
+  });
+
+  // Component chart
+  const ctx = document.getElementById('compChart').getContext('2d');
+  if (compChart) compChart.destroy();
+  compChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: COMP_DEFS.map(d => d.shortLabel),
+      datasets: [{
+        data: COMP_DEFS.map(d => comp[d.key]),
+        backgroundColor: COMP_DEFS.map(d => d.hex),
+        borderRadius: 4,
+        maxBarThickness: 26,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: (c) => fmtM(c.raw) + ' M$' } } },
+      scales: {
+        x: { ticks: { color: '#8B93A0', font: { size: 10.5 },
+              callback: (v) => (v/1000).toLocaleString('es-CL') + 'k' },
+             grid: { color: '#E4E1D8' } },
+        y: { ticks: { color: '#3A4250', font: { size: 11.5 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Component table
+  const tbl = document.getElementById('compTable');
+  let rows = '<tr><th>Componente</th><th class="num">M$2026</th><th class="num">%</th></tr>';
+  COMP_DEFS.forEach(def => {
+    const v = comp[def.key];
+    const pct = total > 0 ? (v/total*100) : 0;
+    rows += '<tr><td><span class="swatch" style="background:' + def.color + '"></span>' + def.label + '</td>' +
+      '<td class="num">' + fmtM(v) + '</td><td class="num">' + pct.toFixed(1) + '%</td></tr>';
+  });
+  tbl.innerHTML = rows;
+
+  // Gasto gestionable fuera del modelo
+  document.getElementById('fmComprasVal').textContent = fmtM(h.fueraModelo.comprasExtrahosp) + ' M$';
+  document.getElementById('fmSociosanitariosVal').textContent = fmtM(h.fueraModelo.sociosanitarios) + ' M$';
+  document.getElementById('gtModelo').textContent = fmtM(t.modeloTotal) + ' M$';
+  document.getElementById('gtGestionable').textContent = fmtM(t.gestionable) + ' M$';
+  document.getElementById('gtTotal').textContent = fmtM(t.totalExplicado) + ' M$';
+  document.getElementById('gtPlanificacion').textContent = fmtM(t.planificacion) + ' M$';
+  document.getElementById('gtPct').textContent = fmtPct(t.pctPlanificacionExplicado);
+
+  // UPH block
+  // (Composición del componente GRD ahora se muestra en el desglose junto a las barras principales)
+
+  // Costo real 2025 vs. Valorización Nuevo Modelo
+  const ec = h.egresosCMA;
+  const grdAT = h.componentes.grdAT||0;
+  const valorizacionModelo = (h.componentes.grdGasto||0) + grdAT;
+  const costoReal2025 = ((h.uph.uphTotal||0) * (h.uph.gastoUnitarioObservado||0) / 1000) + grdAT;
+  const maxRace = Math.max(valorizacionModelo, costoReal2025, 1);
+  document.getElementById('raceObservado').style.width = (costoReal2025/maxRace*100) + '%';
+  document.getElementById('raceModelo').style.width = (valorizacionModelo/maxRace*100) + '%';
+  document.getElementById('raceObservadoVal').textContent = fmtM(costoReal2025) + ' M$';
+  document.getElementById('raceModeloVal').textContent = fmtM(valorizacionModelo) + ' M$';
+  document.getElementById('raceObservadoBreak').textContent =
+    'UPH × precio observado: ' + fmtM(costoReal2025 - grdAT) + ' M$ + AT: ' + fmtM(grdAT) + ' M$';
+  document.getElementById('raceModeloBreak').textContent =
+    'Gasto validado: ' + fmtM(h.componentes.grdGasto) + ' M$ + AT: ' + fmtM(grdAT) + ' M$';
+
+  const delta = valorizacionModelo - costoReal2025;
+  const deltaPct = costoReal2025 > 0 ? (delta/costoReal2025) : null;
+  const deltaBanner = document.getElementById('deltaBanner');
+  const deltaLabel = document.getElementById('deltaLabel');
+  const deltaValue = document.getElementById('deltaValue');
+  if (delta >= 0) {
+    deltaBanner.className = 'delta-banner tone-green';
+    deltaLabel.textContent = 'El Nuevo Modelo financia más de lo que costó esta producción en 2025';
+    deltaValue.textContent = '+' + fmtM(delta) + ' M$' + (deltaPct !== null ? ' (+' + fmtPct(deltaPct) + ')' : '');
+  } else {
+    deltaBanner.className = 'delta-banner tone-red';
+    deltaLabel.textContent = 'El Nuevo Modelo financia menos de lo que costó esta producción en 2025 — requiere gestión';
+    deltaValue.textContent = '-' + fmtM(Math.abs(delta)) + ' M$' + (deltaPct !== null ? ' (-' + fmtPct(Math.abs(deltaPct)) + ')' : '');
+  }
+
+  // Producción validada 2025 — Egresos y CMA
+  document.getElementById('prodEH').textContent = fmtM(ec.ehValidados);
+  document.getElementById('prodPMEH').textContent = (ec.pmEH !== null && ec.pmEH !== undefined) ? ec.pmEH.toFixed(3) : '—';
+  document.getElementById('prodCMA').textContent = fmtM(ec.cmaValidados);
+  document.getElementById('prodPMCMA').textContent = (ec.pmCMA !== null && ec.pmCMA !== undefined) ? ec.pmCMA.toFixed(3) : '—';
+
+  document.getElementById('uphTotal').textContent = fmtM(h.uph.uphTotal);
+  document.getElementById('uphPrecioBase').textContent = fmtM(h.uph.precioBasePropuesto);
+  document.getElementById('uphEfecto').textContent = fmtM(h.uph.efectoMayorGasto);
+
+  const maxVal = Math.max(h.uph.gastoUnitarioObservado||0, h.uph.precioBasePropuesto||0, 1);
+  document.getElementById('barObservado').style.width = ((h.uph.gastoUnitarioObservado||0)/maxVal*100) + '%';
+  document.getElementById('barPropuesto').style.width = ((h.uph.precioBasePropuesto||0)/maxVal*100) + '%';
+  document.getElementById('valObservado').textContent = '$' + fmtM(h.uph.gastoUnitarioObservado);
+  document.getElementById('valPropuesto').textContent = '$' + fmtM(h.uph.precioBasePropuesto);
+
+  document.getElementById('pbBase').textContent = '$' + fmtM(ec.precioBaseW);
+  document.getElementById('pbZona').textContent = '$' + fmtM(ec.ajusteZona);
+  document.getElementById('pbTotal').textContent = '$' + fmtM(h.uph.precioBasePropuesto);
+
+  const note = document.getElementById('uphNote');
+  if ((h.uph.efectoMayorGasto||0) > 0) {
+    note.textContent = 'El gasto unitario observado en egresos de Caja I supera el precio base propuesto por el modelo en $' +
+      fmtM(h.uph.mayorGastoPorUPH) + ' por UPH, lo que representa un efecto de M$' + fmtM(h.uph.efectoMayorGasto) +
+      ' sobre el total de unidades productivas del establecimiento.';
+  } else {
+    note.textContent = 'El gasto unitario observado en egresos de Caja I se encuentra dentro o por debajo del precio base propuesto por el modelo.';
+  }
+
+  document.getElementById('updatedAt').textContent = 'Vista: análisis con variables productivas del modelo (columnas T–X, con % asociado y déficit justificado de referencia)';
+
+  renderCapacidad(h);
+
+  renderComparisonInto(h, CMP_DEFS_GLOBAL, 'cmpContainerGlobal');
+  renderComparisonInto(h, CMP_DEFS_GRD, 'cmpContainerGRD');
+}
+
+const MEDIANA_OCUPACION_NACIONAL = 0.8094146882307679;
+
+function fmtEntero(n){
+  if (n === null || n === undefined) return '—';
+  return Math.round(n).toLocaleString('es-CL');
+}
+function fmtDec(n, dec){
+  if (n === null || n === undefined) return '—';
+  return n.toLocaleString('es-CL', {minimumFractionDigits: dec, maximumFractionDigits: dec});
+}
+
+function renderCapacidad(h){
+  const cap = h.capacidad;
+  const ocupCard = document.getElementById('capOcupacionCard');
+  const ingresoCard = document.getElementById('capIngresoCard');
+
+  if (!cap) {
+    document.getElementById('capCamas').textContent = '—';
+    document.getElementById('capOcupacion').textContent = '—';
+    document.getElementById('capOcupacionFoot').textContent = 'Sin datos de capacidad instalada disponibles';
+    document.getElementById('capIngresoExtra').textContent = '—';
+    document.getElementById('gaugeOcupacion').style.width = '0%';
+    document.getElementById('capNote').textContent = 'Aún no se dispone de datos de capacidad instalada para este establecimiento.';
+    ['flowDiasCama','flowDiasEstada','flowEgresosExtra','flowPesoMedio','flowUphExtra','flowPrecioBase','flowIngresoFinal'].forEach(id => {
+      document.getElementById(id).textContent = '—';
+    });
+    return;
+  }
+
+  document.getElementById('capCamas').textContent = fmtEntero(cap.camas);
+  document.getElementById('capOcupacion').textContent = fmtPct(cap.pctOcupacion);
+
+  const brechaPP = (MEDIANA_OCUPACION_NACIONAL - (cap.pctOcupacion||0)) * 100;
+  if (brechaPP > 0.05) {
+    ocupCard.className = 'kpi-card tone-amber';
+    document.getElementById('capOcupacionFoot').textContent =
+      brechaPP.toFixed(1).replace('.', ',') + ' puntos porcentuales bajo la mediana nacional';
+  } else {
+    ocupCard.className = 'kpi-card tone-green';
+    document.getElementById('capOcupacionFoot').textContent = 'En línea o sobre la mediana nacional (80,9%)';
+  }
+
+  const gaugeWidth = Math.max(0, Math.min(100, (cap.pctOcupacion||0) * 100));
+  document.getElementById('gaugeOcupacion').style.width = gaugeWidth + '%';
+  document.getElementById('gaugeMediana').style.left = (MEDIANA_OCUPACION_NACIONAL*100) + '%';
+
+  const ingresoExtra = cap.ingresoExtraPotencialM || 0;
+  document.getElementById('capIngresoExtra').textContent = fmtM(ingresoExtra) + ' M$';
+
+  document.getElementById('flowDiasCama').textContent = fmtEntero(cap.diasCamaDispExtra) + ' días';
+  document.getElementById('flowDiasEstada').textContent = fmtDec(cap.promDiasEstada, 1) + ' días';
+  document.getElementById('flowEgresosExtra').textContent = fmtEntero(cap.egresosExtraPotenciales) + ' egresos';
+  document.getElementById('flowPesoMedio').textContent = fmtDec(cap.pesoMedioObsEH, 2);
+  document.getElementById('flowUphExtra').textContent = fmtEntero(cap.uphExtraPotenciales) + ' UPH';
+  document.getElementById('flowPrecioBase').textContent = '$' + fmtEntero(h.uph.precioBasePropuesto);
+  document.getElementById('flowIngresoFinal').textContent = fmtM(ingresoExtra) + ' M$';
+
+  const note = document.getElementById('capNote');
+  if (ingresoExtra > 0) {
+    note.textContent = 'Si el establecimiento elevara su ocupación de camas desde ' + fmtPct(cap.pctOcupacion) +
+      ' hasta la mediana nacional (80,9%), liberaría capacidad para ' + fmtEntero(cap.egresosExtraPotenciales) +
+      ' egresos adicionales al año — equivalentes a ' + fmtEntero(cap.uphExtraPotenciales) +
+      ' UPH y a un ingreso potencial de ' + fmtM(ingresoExtra) + ' M$2026, sin aumentar la dotación de camas.';
+  } else {
+    note.textContent = 'Este establecimiento ya opera con una ocupación de camas igual o superior a la mediana nacional (80,9%), por lo que no se identifica una brecha de gestión de camas relevante bajo este indicador.';
+  }
+}
+
+function switchPage(pageId){
+  document.querySelectorAll('.page').forEach(p => p.style.display = (p.id === pageId ? '' : 'none'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+}
+
+const CMP_DEFS_GLOBAL = [
+  {
+    label: '% gasto planificado 2026 explicado por producción (incluye Egresos no validados)',
+    getter: h => computeTotals(h).pctAsociado,
+    fmt: v => fmtPct(v),
+  },
+];
+
+const CMP_DEFS_GRD = [
+  {
+    label: 'Gasto unitario observado 2025 — atención cerrada',
+    getter: h => h.uph.gastoUnitarioObservado,
+    fmt: v => '$' + fmtM(v),
+  },
+];
+
+function percentile(values, v){
+  const sorted = [...values].sort((a,b)=>a-b);
+  const below = sorted.filter(x => x <= v).length;
+  return Math.round(below / sorted.length * 100);
+}
+function percentileValue(values, p){
+  const sorted = [...values].sort((a,b)=>a-b);
+  const idx = (sorted.length - 1) * (p/100);
+  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  if (lo === hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi]-sorted[lo]) * (idx-lo);
+}
+function median(values){
+  const sorted = [...values].sort((a,b)=>a-b);
+  const mid = Math.floor(sorted.length/2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid-1]+sorted[mid])/2;
+}
+
+function renderComparisonInto(h, defs, containerId){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  defs.forEach(def => {
+    const values = DATA.map(def.getter).filter(v => v !== null && v !== undefined);
+    const min = Math.min(...values), max = Math.max(...values);
+    const med = median(values);
+    const p25 = percentileValue(values, 25);
+    const p75 = percentileValue(values, 75);
+    const v = def.getter(h);
+    const pct = percentile(values, v);
+    const pos = (val) => max > min ? ((val - min) / (max - min) * 100) : 50;
+
+    const row = document.createElement('div');
+    row.className = 'cmp-row';
+    row.innerHTML =
+      '<div class="cmp-head"><span class="name">' + def.label + '</span>' +
+      '<span class="pctile">' + def.fmt(v) + ' · percentil ' + pct + ' de 80</span></div>' +
+      '<div class="cmp-track">' +
+        '<div class="cmp-tick" data-label="p25 ' + def.fmt(p25) + '" style="left:' + pos(p25) + '%"></div>' +
+        '<div class="cmp-tick" data-label="p75 ' + def.fmt(p75) + '" style="left:' + pos(p75) + '%"></div>' +
+        '<div class="cmp-median" data-label="mediana ' + def.fmt(med) + '" style="left:' + pos(med) + '%"></div>' +
+        '<div class="cmp-dot" style="left:' + pos(v) + '%" title="' + h.nombre.trim() + '"></div>' +
+      '</div>' +
+      '<div class="cmp-scale"><span>' + def.fmt(min) + '</span><span>' + def.fmt(max) + '</span></div>';
+    container.appendChild(row);
+  });
+}
+
+function populateSelect(){
+  const ssSelect = document.getElementById('ssSelect');
+  const hospitalSelect = document.getElementById('hospitalSelect');
+
+  const ssMap = new Map();
+  DATA.forEach(h => { if (!ssMap.has(h.servicioSalud)) ssMap.set(h.servicioSalud, h.codSS); });
+  const servicios = [...ssMap.keys()].sort((a,b) => ssMap.get(a) - ssMap.get(b));
+
+  const allOpt = document.createElement('option');
+  allOpt.value = '__all__';
+  allOpt.textContent = 'Todos los servicios de salud';
+  ssSelect.appendChild(allOpt);
+  servicios.forEach(ss => {
+    const opt = document.createElement('option');
+    opt.value = ss;
+    opt.textContent = ss;
+    ssSelect.appendChild(opt);
+  });
+
+  function fillHospitals(ss){
+    hospitalSelect.innerHTML = '';
+    const list = ss === '__all__' ? DATA : DATA.filter(h => h.servicioSalud === ss);
+    list.forEach(h => {
+      const opt = document.createElement('option');
+      opt.value = DATA.indexOf(h);
+      opt.textContent = h.nombre.trim();
+      hospitalSelect.appendChild(opt);
+    });
+  }
+
+  ssSelect.addEventListener('change', () => {
+    fillHospitals(ssSelect.value);
+    hospitalSelect.selectedIndex = 0;
+    render(DATA[hospitalSelect.value]);
+  });
+
+  hospitalSelect.addEventListener('change', () => render(DATA[hospitalSelect.value]));
+
+  // default: select the service of the first hospital, scoped list
+  const firstSS = DATA[0].servicioSalud;
+  ssSelect.value = firstSS;
+  fillHospitals(firstSS);
+}
+
+populateSelect();
+render(DATA[0]);
+</script>
+</body>
+</html>
