@@ -1,2 +1,2 @@
-# Departamento-de-Gesti-n-Presupuestaria
+# Departamento-de-Gestión-Presupuestaria
 Paneles del Departamento
